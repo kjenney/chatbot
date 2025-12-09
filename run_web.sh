@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Convenience script to run the web interface with the virtual environment activated
 
 # Activate virtual environment
