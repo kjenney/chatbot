@@ -8,6 +8,14 @@ An AI chatbot agent that has persistent memory using SQLite database. The chatbo
 
 - **AI-Powered Responses**: Uses Ollama with Qwen3:8b model for intelligent conversations
 - **Persistent Memory**: All conversations are stored in SQLite database
+- **Cross-Session Memory**: Remembers information across different conversation sessions
+- **Sub-Agent Framework**: Plugin-based system that spawns separate processes to query APIs
+  - **Auto-discovery**: Drop agent files in `agents/` directory - no code changes needed
+  - Weather information (wttr.in)
+  - Current time/date
+  - Mathematical calculations
+  - Web search (DuckDuckGo)
+  - **Extensible**: Create custom agents in minutes
 - **Session Management**: Create, load, and manage multiple conversation sessions
 - **Conversation History**: Retrieve and display past conversations
 - **Search Functionality**: Search through all messages across sessions
@@ -75,6 +83,12 @@ See [WEB_INTERFACE.md](WEB_INTERFACE.md) for detailed documentation.
 
 Run the chatbot in interactive CLI mode:
 
+**Note**: The chatbot includes sub-agent capabilities for real-time information:
+- Ask about weather: "What's the weather in London?"
+- Request calculations: "Calculate 42 * 17"
+- Check time: "What time is it?"
+- Web searches: "Tell me about Python programming"
+
 ```bash
 # Option 1: Use the convenience script
 ./run.sh
@@ -137,9 +151,18 @@ chatbot.close()
 ```
 local-agent-with-memory/
 ├── chatbot_agent.py       # Core chatbot with SQLite memory
+├── sub_agents.py          # Sub-agent orchestrator
 ├── web_app.py             # Flask web server
 ├── run_web.sh             # Web interface launcher
 ├── run.sh                 # CLI launcher
+├── agents/                # 🔌 Plugin directory
+│   ├── __init__.py        # Auto-discovery system
+│   ├── base_agent.py      # Base agent class
+│   ├── weather_agent.py   # Weather plugin
+│   ├── time_agent.py      # Time/date plugin
+│   ├── calculator_agent.py # Calculator plugin
+│   ├── web_search_agent.py # Search plugin
+│   └── README.md          # Agent documentation
 ├── templates/
 │   └── chat.html          # Web UI HTML template
 ├── static/
@@ -147,8 +170,11 @@ local-agent-with-memory/
 │   └── js/chat.js         # Web UI JavaScript
 ├── example_usage.py       # Programmatic usage examples
 ├── test_ollama.py         # Test Ollama integration
+├── test_sub_agents.py     # Test sub-agent functionality
 ├── requirements.txt       # Python dependencies
 ├── README.md              # This file
+├── PLUGIN_GUIDE.md        # Guide to creating custom agents
+├── SUB_AGENTS.md          # Sub-agent documentation
 ├── WEB_INTERFACE.md       # Web interface documentation
 ├── QUICKSTART.md          # Quick start guide
 └── *.db                   # SQLite databases (auto-created)

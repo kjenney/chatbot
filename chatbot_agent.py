@@ -5,23 +5,28 @@ A chatbot that remembers all conversations using SQLite database
 """
 
 import sqlite3
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 import ollama
+from sub_agents import AgentOrchestrator
+import re
 
 
 class PersistentChatbot:
     """A chatbot with persistent memory using SQLite"""
 
-    def __init__(self, db_path: str = "chatbot_memory.db"):
+    def __init__(self, db_path: str = "chatbot_memory.db", enable_sub_agents: bool = True):
         """
         Initialize the chatbot with SQLite database
 
         Args:
             db_path: Path to the SQLite database file
+            enable_sub_agents: Enable sub-agent functionality for API queries
         """
         self.db_path = db_path
         self.current_session_id = None
         self.conn = None
+        self.enable_sub_agents = enable_sub_agents
+        self.orchestrator = AgentOrchestrator() if enable_sub_agents else None
         self.initialize_database()
 
     def initialize_database(self):
@@ -268,6 +273,7 @@ class PersistentChatbot:
         """
         Generate a response using Ollama with qwen3:8b model
         Searches across all previous conversations for relevant context
+        Uses sub-agents to fetch real-time information when needed
 
         Args:
             user_input: User's current message
@@ -277,6 +283,9 @@ class PersistentChatbot:
             Response string from Ollama
         """
         try:
+            # Execute sub-agents if needed for real-time information
+            agent_results = self._execute_sub_agents_if_needed(user_input)
+
             # Search for relevant information from previous sessions
             relevant_context = self._get_cross_session_context(user_input)
 
@@ -285,6 +294,11 @@ class PersistentChatbot:
 
             # Build system message with cross-session context if available
             system_content = 'You are a helpful AI assistant with persistent memory across all conversations. '
+
+            # Add sub-agent results if available
+            if agent_results:
+                system_content += f'\n\nREAL-TIME INFORMATION FROM SUB-AGENTS:\n{agent_results}\n\n'
+                system_content += 'Use this real-time information to answer the user\'s question accurately. '
 
             if relevant_context:
                 system_content += f'\n\nRELEVANT INFORMATION FROM PREVIOUS CONVERSATIONS:\n{relevant_context}\n\n'
@@ -397,6 +411,181 @@ class PersistentChatbot:
             context_parts.append(f"- User previously said: \"{msg['content']}\"")
 
         return '\n'.join(context_parts)
+
+    def _execute_sub_agents_if_needed(self, user_input: str) -> str:
+        """
+        Detect if the user query needs sub-agents and execute them
+
+        Args:
+            user_input: User's message
+
+        Returns:
+            Formatted string with sub-agent results, or empty string
+        """
+        if not self.enable_sub_agents or not self.orchestrator:
+            return ""
+
+        user_input_lower = user_input.lower()
+        agent_tasks = []
+
+        # Detect weather queries
+        weather_keywords = ['weather', 'temperature', 'forecast', 'hot', 'cold', 'rain', 'sunny']
+        if any(keyword in user_input_lower for keyword in weather_keywords):
+            # Extract location if mentioned
+            location = self._extract_location(user_input)
+            agent_tasks.append({
+                'agent': 'weather',
+                'params': {'location': location or 'auto'}
+            })
+
+        # Detect time/date queries
+        time_keywords = ['time', 'date', 'today', 'what day', 'current time', 'now']
+        if any(keyword in user_input_lower for keyword in time_keywords):
+            agent_tasks.append({
+                'agent': 'time',
+                'params': {}
+            })
+
+        # Detect calculation queries
+        calc_patterns = [r'\d+\s*[\+\-\*\/]\s*\d+', r'calculate', r'compute', r'what is \d+']
+        if any(re.search(pattern, user_input_lower) for pattern in calc_patterns):
+            # Extract the mathematical expression
+            expression = self._extract_calculation(user_input)
+            if expression:
+                agent_tasks.append({
+                    'agent': 'calculator',
+                    'params': {'expression': expression}
+                })
+
+        # Detect web search queries
+        search_keywords = ['search for', 'look up', 'find information', 'what is', 'who is', 'tell me about']
+        # Only search if not asking about personal info or memory
+        personal_keywords = ['my name', 'my', 'i told you', 'remember me']
+        if (any(keyword in user_input_lower for keyword in search_keywords) and
+            not any(keyword in user_input_lower for keyword in personal_keywords)):
+            # Extract search query
+            query = self._extract_search_query(user_input)
+            if query:
+                agent_tasks.append({
+                    'agent': 'web_search',
+                    'params': {'query': query, 'max_results': 3}
+                })
+
+        # Execute agents if any were triggered
+        if not agent_tasks:
+            return ""
+
+        try:
+            results = self.orchestrator.execute_agents(agent_tasks, timeout=10)
+            return self._format_agent_results(results)
+        except Exception as e:
+            return f"[Sub-agent error: {str(e)}]"
+
+    def _extract_location(self, text: str) -> Optional[str]:
+        """Extract location from text for weather queries"""
+        # Simple patterns for location extraction
+        patterns = [
+            r'in\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)',  # "in Boston"
+            r'at\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)',  # "at London"
+            r'for\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)', # "for Paris"
+        ]
+
+        for pattern in patterns:
+            match = re.search(pattern, text)
+            if match:
+                return match.group(1)
+
+        return None
+
+    def _extract_calculation(self, text: str) -> Optional[str]:
+        """Extract mathematical expression from text"""
+        # Look for mathematical expressions
+        pattern = r'([\d\+\-\*\/\(\)\.\s%]+)'
+        matches = re.findall(pattern, text)
+
+        for match in matches:
+            match = match.strip()
+            # Basic validation - must have at least one operator and number
+            if any(op in match for op in ['+', '-', '*', '/', '%']) and any(c.isdigit() for c in match):
+                return match
+
+        return None
+
+    def _extract_search_query(self, text: str) -> Optional[str]:
+        """Extract search query from user input"""
+        text_lower = text.lower()
+
+        # Remove common question starters
+        query = text
+        for prefix in ['search for', 'look up', 'find information about', 'tell me about', 'what is', 'who is']:
+            if prefix in text_lower:
+                idx = text_lower.index(prefix)
+                query = text[idx + len(prefix):].strip()
+                break
+
+        # Clean up the query
+        query = query.strip('?.,!').strip()
+
+        return query if len(query) > 2 else None
+
+    def _format_agent_results(self, results: List[Dict[str, Any]]) -> str:
+        """Format sub-agent results for inclusion in the AI prompt"""
+        if not results:
+            return ""
+
+        formatted_parts = []
+
+        for result in results:
+            agent_name = result.get('agent', 'unknown')
+
+            if not result.get('success'):
+                formatted_parts.append(f"[{agent_name} failed: {result.get('error', 'unknown error')}]")
+                continue
+
+            data = result.get('data', {})
+
+            if agent_name == 'weather':
+                if 'data' in data:
+                    weather = data['data']
+                    formatted_parts.append(
+                        f"Weather for {weather.get('location', 'unknown')}: "
+                        f"{weather.get('condition', 'N/A')}, "
+                        f"{weather.get('temperature_c', 'N/A')}°C ({weather.get('temperature_f', 'N/A')}°F), "
+                        f"Feels like {weather.get('feels_like_c', 'N/A')}°C, "
+                        f"Humidity: {weather.get('humidity', 'N/A')}%"
+                    )
+
+            elif agent_name == 'time':
+                if 'data' in data:
+                    time_info = data['data']
+                    formatted_parts.append(
+                        f"Current date and time: {time_info.get('current_time', 'N/A')} "
+                        f"({time_info.get('day_of_week', 'N/A')})"
+                    )
+
+            elif agent_name == 'calculator':
+                if 'data' in data:
+                    calc = data['data']
+                    formatted_parts.append(
+                        f"Calculation: {calc.get('expression', 'N/A')} = {calc.get('result', 'N/A')}"
+                    )
+
+            elif agent_name == 'web_search':
+                if 'data' in data:
+                    search = data['data']
+                    if search.get('abstract'):
+                        formatted_parts.append(
+                            f"Search result for '{search.get('query', 'N/A')}': "
+                            f"{search.get('abstract', 'N/A')} "
+                            f"(Source: {search.get('abstract_source', 'N/A')})"
+                        )
+                    elif search.get('related_topics'):
+                        topics = search['related_topics'][:2]
+                        topic_text = '; '.join([t.get('text', '') for t in topics if t.get('text')])
+                        if topic_text:
+                            formatted_parts.append(f"Search results: {topic_text}")
+
+        return '\n'.join(formatted_parts) if formatted_parts else ""
 
     def close(self):
         """Close database connection"""
