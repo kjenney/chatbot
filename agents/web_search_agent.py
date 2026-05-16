@@ -1,10 +1,9 @@
 """
 Web Search Agent
-Performs web searches using DuckDuckGo API
+Performs web searches using DuckDuckGo via ddgs library
 """
 
 from typing import Dict, Any
-import requests
 from agents.base_agent import BaseAgent
 
 
@@ -26,41 +25,21 @@ class WebSearchAgent(BaseAgent):
             max_results: Maximum number of results to return
         """
         try:
-            # Using DuckDuckGo Instant Answer API (no key needed)
-            url = "https://api.duckduckgo.com/"
-            params = {
-                'q': query,
-                'format': 'json',
-                'no_html': 1,
-                'skip_disambig': 1
-            }
-
-            response = requests.get(url, params=params, timeout=5)
-            response.raise_for_status()
-            data = response.json()
+            from ddgs import DDGS
+            with DDGS() as d:
+                hits = list(d.text(query, max_results=max_results))
 
             results = {
                 'query': query,
-                'abstract': data.get('Abstract', ''),
-                'abstract_source': data.get('AbstractSource', ''),
-                'abstract_url': data.get('AbstractURL', ''),
-                'related_topics': []
+                'abstract': hits[0]['body'] if hits else '',
+                'abstract_source': hits[0]['title'] if hits else '',
+                'abstract_url': hits[0]['href'] if hits else '',
+                'related_topics': [
+                    {'text': f"{h['title']}: {h['body']}", 'url': h['href']}
+                    for h in hits
+                ]
             }
 
-            # Add related topics
-            for topic in data.get('RelatedTopics', [])[:max_results]:
-                if 'Text' in topic:
-                    results['related_topics'].append({
-                        'text': topic.get('Text', ''),
-                        'url': topic.get('FirstURL', '')
-                    })
-
-            return {
-                'success': True,
-                'data': results
-            }
+            return {'success': True, 'data': results}
         except Exception as e:
-            return {
-                'success': False,
-                'error': f"Search failed: {str(e)}"
-            }
+            return {'success': False, 'error': f"Search failed: {str(e)}"}

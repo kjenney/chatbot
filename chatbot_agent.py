@@ -458,9 +458,9 @@ class PersistentChatbot:
                 })
 
         # Detect web search queries
-        search_keywords = ['search for', 'look up', 'find information', 'what is', 'who is', 'tell me about']
+        search_keywords = ['search for', 'search the web', 'look up', 'find information', 'what is', 'who is', 'tell me about']
         # Only search if not asking about personal info or memory
-        personal_keywords = ['my name', 'my', 'i told you', 'remember me']
+        personal_keywords = ['my name', 'i told you', 'remember me']
         if (any(keyword in user_input_lower for keyword in search_keywords) and
             not any(keyword in user_input_lower for keyword in personal_keywords)):
             # Extract search query
@@ -517,7 +517,7 @@ class PersistentChatbot:
 
         # Remove common question starters
         query = text
-        for prefix in ['search for', 'look up', 'find information about', 'tell me about', 'what is', 'who is']:
+        for prefix in ['search the web for', 'search for', 'look up', 'find information about', 'tell me about', 'what is', 'who is']:
             if prefix in text_lower:
                 idx = text_lower.index(prefix)
                 query = text[idx + len(prefix):].strip()
