@@ -27,7 +27,7 @@
     
     
       
-        <title>Sub-Agents - AI Chatbot with Memory</title>
+        <title>Overview - AI Chatbot with Memory</title>
       
     
     
@@ -112,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Sub-Agents
+              Overview
             
           </span>
         </div>
@@ -283,17 +283,18 @@
     
   
   
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
-        
-  
-  
     
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
   
   Sub-Agents
 
-      </a>
-    </li>
+        </a>
+      </li>
+    
   
 
       
@@ -469,6 +470,63 @@
   
   
   
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sub-Agents
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Sub-Agents
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
     <li class="md-nav__item md-nav__item--active">
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
@@ -484,7 +542,7 @@
   <span class="md-ellipsis">
     
   
-    Sub-Agents
+    Overview
   
 
     
@@ -502,7 +560,7 @@
   <span class="md-ellipsis">
     
   
-    Sub-Agents
+    Overview
   
 
     
@@ -868,6 +926,42 @@
     </ul>
   
 </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GMAIL_AGENT.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gmail Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -1333,6 +1427,10 @@
 - "Search for machine learning"
 - "Tell me about Python programming"
 - "Who is Alan Turing?"</p>
+<p><strong>Gmail / Email</strong>
+- "Check my email"
+- "Summarize my unread emails"
+- "What's in my inbox?"</p>
 <h3 id="parallel-execution">🚀 Parallel Execution<a class="headerlink" href="#parallel-execution" title="Permanent link">&para;</a></h3>
 <p>Sub-agents run in <strong>separate processes</strong> for:
 - Fast parallel execution
@@ -1345,6 +1443,7 @@
 <li><strong>TimeAgent</strong> - Gets current date/time information</li>
 <li><strong>CalculatorAgent</strong> - Performs mathematical calculations safely</li>
 <li><strong>WebSearchAgent</strong> - Searches the web using DuckDuckGo API</li>
+<li><strong>GmailAgent</strong> - Fetches and summarizes emails from your Gmail inbox (requires OAuth2 setup — see <a href="GMAIL_AGENT.md">Gmail Agent</a>)</li>
 </ol>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌─────────────────┐
@@ -1531,11 +1630,12 @@
 <li><strong>Automatic Cleanup</strong>: Processes are properly terminated</li>
 </ul>
 <h2 id="api-keys">API Keys<a class="headerlink" href="#api-keys" title="Permanent link">&para;</a></h2>
-<p>Current sub-agents use <strong>free, public APIs</strong> that don't require keys:
+<p>Most sub-agents use <strong>free, public APIs</strong> that don't require keys:
 - Weather: wttr.in (free, no key needed)
 - Web Search: DuckDuckGo (free, no key needed)
 - Time: Local system time
 - Calculator: Local Python evaluation</p>
+<p><strong>Gmail</strong> requires OAuth2 credentials from Google Cloud Console. See the <a href="GMAIL_AGENT.md">Gmail Agent setup guide</a> for step-by-step instructions.</p>
 <p>To add APIs that require keys, use environment variables:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
