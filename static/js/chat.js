@@ -186,7 +186,7 @@ class ChatApp {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message })
+                body: JSON.stringify({ message, session_id: this.currentSessionId })
             });
 
             const data = await response.json();

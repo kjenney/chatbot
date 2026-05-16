@@ -117,7 +117,10 @@ def chat():
             }), 400
 
         # Ensure we have an active session
-        if 'current_session_id' not in session or not chatbot.current_session_id:
+        session_id = data.get('session_id') or session.get('current_session_id')
+        if session_id:
+            chatbot.load_session(session_id)
+        else:
             session_id = chatbot.start_new_session(f'Chat {datetime.now().strftime("%Y-%m-%d %H:%M")}')
             session['current_session_id'] = session_id
 
@@ -128,7 +131,7 @@ def chat():
             'success': True,
             'user_message': user_message,
             'bot_response': response,
-            'session_id': chatbot.current_session_id
+            'session_id': chatbot.current_session_id or session_id
         })
     except Exception as e:
         return jsonify({

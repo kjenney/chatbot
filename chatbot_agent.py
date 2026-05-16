@@ -297,8 +297,11 @@ class PersistentChatbot:
 
             # Add sub-agent results if available
             if agent_results:
-                system_content += f'\n\nREAL-TIME INFORMATION FROM SUB-AGENTS:\n{agent_results}\n\n'
-                system_content += 'Use this real-time information to answer the user\'s question accurately. '
+                system_content += f'\n\nREAL-TIME INFORMATION FROM WEB SEARCH (fetched just now, treat as current):\n{agent_results}\n\n'
+                system_content += ('IMPORTANT: The web search results above are live and current. '
+                                   'You MUST answer using only these results for any real-time or current-events questions. '
+                                   'Do NOT fall back to your training data or say information is unavailable — '
+                                   'extract the answer directly from the search results above. ')
 
             if relevant_context:
                 system_content += f'\n\nRELEVANT INFORMATION FROM PREVIOUS CONVERSATIONS:\n{relevant_context}\n\n'
@@ -468,7 +471,7 @@ class PersistentChatbot:
             if query:
                 agent_tasks.append({
                     'agent': 'web_search',
-                    'params': {'query': query, 'max_results': 3}
+                    'params': {'query': query, 'max_results': 5}
                 })
 
         # Execute agents if any were triggered
@@ -517,7 +520,7 @@ class PersistentChatbot:
 
         # Remove common question starters
         query = text
-        for prefix in ['search the web for', 'search for', 'look up', 'find information about', 'tell me about', 'what is', 'who is']:
+        for prefix in ['search the web to get', 'search the web for', 'search the web', 'search for', 'look up', 'find information about', 'tell me about', 'what is', 'who is']:
             if prefix in text_lower:
                 idx = text_lower.index(prefix)
                 query = text[idx + len(prefix):].strip()
@@ -525,6 +528,16 @@ class PersistentChatbot:
 
         # Clean up the query
         query = query.strip('?.,!').strip()
+
+        # Normalize common misnomers
+        import re as _re
+        query = _re.sub(r'(?i)\bbillboard\s+top\s+100\b', 'Billboard Hot 100', query)
+
+        # Append current year for time-sensitive queries so search engines return fresh results
+        time_sensitive = ['current', 'latest', 'now', 'today', 'this week', 'right now']
+        if any(w in query.lower() for w in time_sensitive):
+            from datetime import date as _date
+            query = f"{query} {_date.today().year}"
 
         return query if len(query) > 2 else None
 
@@ -573,17 +586,17 @@ class PersistentChatbot:
             elif agent_name == 'web_search':
                 if 'data' in data:
                     search = data['data']
+                    parts = []
                     if search.get('abstract'):
+                        parts.append(search['abstract'])
+                    for t in search.get('related_topics', []):
+                        if t.get('text') and t['text'] != search.get('abstract'):
+                            parts.append(t['text'])
+                    if parts:
                         formatted_parts.append(
-                            f"Search result for '{search.get('query', 'N/A')}': "
-                            f"{search.get('abstract', 'N/A')} "
-                            f"(Source: {search.get('abstract_source', 'N/A')})"
+                            f"Web search results for '{search.get('query', 'N/A')}':\n" +
+                            '\n'.join(f"- {p}" for p in parts)
                         )
-                    elif search.get('related_topics'):
-                        topics = search['related_topics'][:2]
-                        topic_text = '; '.join([t.get('text', '') for t in topics if t.get('text')])
-                        if topic_text:
-                            formatted_parts.append(f"Search results: {topic_text}")
 
         return '\n'.join(formatted_parts) if formatted_parts else ""
 

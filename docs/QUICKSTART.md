@@ -170,7 +170,7 @@ kill -9 <PID>
 
 ## Need Help?
 
-- 📖 Full docs: [README.md](README.md)
+- 📖 Full docs: [Home](index.md)
 - 🌐 Web interface guide: [WEB_INTERFACE.md](WEB_INTERFACE.md)
 - 💻 Code examples: `example_usage.py` and `test_ollama.py`
 
