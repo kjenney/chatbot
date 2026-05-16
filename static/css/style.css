@@ -599,3 +599,64 @@ kbd {
         padding: 1rem;
     }
 }
+
+/* Advanced View — Agent panels */
+#advanced-view-btn.active {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.agent-panel {
+    border-top: 1px solid var(--border-color);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.agent-panel summary {
+    cursor: pointer;
+    list-style: none;
+    font-weight: 500;
+    user-select: none;
+}
+
+.agent-panel summary::-webkit-details-marker {
+    display: none;
+}
+
+.agent-panel summary::before {
+    content: '▶ ';
+    font-size: 0.65rem;
+}
+
+.agent-panel[open] summary::before {
+    content: '▼ ';
+}
+
+.agent-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.agent-pill {
+    display: inline-block;
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.agent-pill.success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.agent-pill.fail {
+    background: #fee2e2;
+    color: #991b1b;
+}
