@@ -12,6 +12,10 @@ google-auth-oauthlib>=1.1.0
 
 # Note: SQLite3 is included in Python's standard library
 
+# Testing
+pytest>=8.0.0
+pytest-mock>=3.12.0
+
 # Optional: For other AI providers (if you want to switch)
 # openai>=1.0.0
 # anthropic>=0.8.0
