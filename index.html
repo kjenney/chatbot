@@ -314,6 +314,25 @@
   
 
       
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Reference
+
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -596,6 +615,33 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -700,53 +746,64 @@
 <h1 id="ai-chatbot-with-memory">AI Chatbot with Memory<a class="headerlink" href="#ai-chatbot-with-memory" title="Permanent link">&para;</a></h1>
 <p>An AI chatbot with persistent memory, a real-time sub-agent framework, and a modern web interface — running entirely locally via Ollama.</p>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>AI-Powered Responses</strong> — Ollama with Qwen3:8b for intelligent conversations</li>
+<li><strong>Persistent Memory</strong> — all conversations stored in SQLite across sessions</li>
+<li><strong>Cross-Session Memory</strong> — recalls user details from past conversations</li>
+<li><strong>Sub-Agent Framework</strong> — plugin-based system spawning parallel processes to query APIs<ul>
+<li>Auto-discovery: drop agent files in <code>agents/</code> — no code changes needed</li>
+<li>Weather information (wttr.in)</li>
+<li>Current time/date</li>
+<li>Mathematical calculations</li>
+<li>Web search (DuckDuckGo)</li>
+<li>Extensible: create custom agents in minutes</li>
+</ul>
+</li>
+<li><strong>Session Management</strong> — create, load, and manage multiple conversation sessions</li>
+<li><strong>Conversation History</strong> — retrieve and display past conversations</li>
+<li><strong>Search</strong> — search all messages across all sessions</li>
+<li><strong>Context-Aware</strong> — full conversation history sent to the model automatically</li>
+<li><strong>Local &amp; Private</strong> — runs completely offline via local Ollama models</li>
+</ul>
+<h2 id="built-in-sub-agents">Built-in Sub-Agents<a class="headerlink" href="#built-in-sub-agents" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Feature</th>
-<th>Description</th>
+<th>Agent</th>
+<th>Capability</th>
+<th>API Used</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Persistent Memory</strong></td>
-<td>All conversations stored in SQLite across sessions</td>
+<td>WeatherAgent</td>
+<td>Current conditions</td>
+<td>wttr.in (free, no key)</td>
 </tr>
 <tr>
-<td><strong>Cross-Session Recall</strong></td>
-<td>Remembers user details from past conversations</td>
+<td>TimeAgent</td>
+<td>Current date/time</td>
+<td>System clock</td>
 </tr>
 <tr>
-<td><strong>Sub-Agent Framework</strong></td>
-<td>Spawns parallel processes to fetch real-time data</td>
+<td>CalculatorAgent</td>
+<td>Safe math evaluation</td>
+<td>Local Python</td>
 </tr>
 <tr>
-<td><strong>Web Interface</strong></td>
-<td>Modern chat UI with session sidebar and search</td>
-</tr>
-<tr>
-<td><strong>Extensible</strong></td>
-<td>Drop a file in <code>agents/</code> to add a new capability</td>
-</tr>
-<tr>
-<td><strong>Local &amp; Private</strong></td>
-<td>Runs fully offline via Ollama — no data leaves your machine</td>
+<td>WebSearchAgent</td>
+<td>Live web search + page fetch</td>
+<td>DuckDuckGo (free, no key)</td>
 </tr>
 </tbody>
 </table>
-<h2 id="built-in-sub-agents">Built-in Sub-Agents<a class="headerlink" href="#built-in-sub-agents" title="Permanent link">&para;</a></h2>
-<ul>
-<li><strong>WeatherAgent</strong> — current conditions via wttr.in</li>
-<li><strong>TimeAgent</strong> — current date and time</li>
-<li><strong>CalculatorAgent</strong> — safe math evaluation</li>
-<li><strong>WebSearchAgent</strong> — live web search via DuckDuckGo</li>
-</ul>
 <h2 id="quick-links">Quick Links<a class="headerlink" href="#quick-links" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="QUICKSTART/">Quick Start</a> — up and running in 5 minutes</li>
-<li><a href="WEB_INTERFACE/">Web Interface</a> — UI features, API reference, deployment</li>
+<li><a href="WEB_INTERFACE/">Web Interface</a> — UI features, API endpoints, deployment</li>
 <li><a href="SUB_AGENTS/">Sub-Agents</a> — architecture and how agents work</li>
 <li><a href="PLUGIN_GUIDE/">Plugin Guide</a> — create your own agents</li>
+<li><a href="reference/">Reference</a> — API, database schema, project structure</li>
 </ul>
 <h2 id="tech-stack">Tech Stack<a class="headerlink" href="#tech-stack" title="Permanent link">&para;</a></h2>
 <ul>

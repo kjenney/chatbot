@@ -316,6 +316,25 @@
   
 
       
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../reference/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Reference
+
+      </a>
+    </li>
+  
+
+      
     </ul>
   </div>
 </nav>
@@ -688,32 +707,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
         Next Steps
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#need-help" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Need Help?
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#file-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        File Structure
       
     </span>
   </a>
@@ -797,6 +816,33 @@
     
   
     Plugin Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
   
 
     
@@ -1069,32 +1115,32 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Commands
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#next-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
         Next Steps
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#need-help" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Need Help?
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#file-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        File Structure
       
     </span>
   </a>
@@ -1156,7 +1202,7 @@
 </code></pre></div>
 <h2 id="3-choose-your-interface">3. Choose Your Interface<a class="headerlink" href="#3-choose-your-interface" title="Permanent link">&para;</a></h2>
 <h3 id="option-a-web-interface-recommended">Option A: Web Interface (Recommended)<a class="headerlink" href="#option-a-web-interface-recommended" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>./run_web.sh
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>web_app.py
 </code></pre></div>
 <p>Then open: <strong>http://localhost:7000</strong></p>
 <p>✨ You'll get:
@@ -1165,7 +1211,7 @@
 - Search functionality
 - Mobile-friendly design</p>
 <h3 id="option-b-command-line-interface">Option B: Command Line Interface<a class="headerlink" href="#option-b-command-line-interface" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>./run.sh
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>python3<span class="w"> </span>chatbot_agent.py
 </code></pre></div>
 <p>Interactive terminal chat with full memory.</p>
 <h3 id="option-c-programmatic-usage">Option C: Programmatic Usage<a class="headerlink" href="#option-c-programmatic-usage" title="Permanent link">&para;</a></h3>
@@ -1240,33 +1286,51 @@
 <a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="c1"># Make sure you&#39;re at http://localhost:7000 not https://</span>
 <a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Try a different browser</span>
 </code></pre></div>
+<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<p>Verify Ollama integration:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>python3<span class="w"> </span>tests/test_ollama.py
+</code></pre></div>
+<p>Run the full example script:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">source</span><span class="w"> </span>venv/bin/activate
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>python3<span class="w"> </span>cmd/example_usage.py
+</code></pre></div>
+<p>This demonstrates basic conversation, session management, search, and memory persistence.</p>
+<h2 id="cli-commands">CLI Commands<a class="headerlink" href="#cli-commands" title="Permanent link">&para;</a></h2>
+<p>When running the command line interface:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(any text)</em></td>
+<td>Chat with the bot</td>
+</tr>
+<tr>
+<td><code>history</code></td>
+<td>Display full conversation history</td>
+</tr>
+<tr>
+<td><code>search &lt;query&gt;</code></td>
+<td>Search messages across all sessions</td>
+</tr>
+<tr>
+<td><code>quit</code> / <code>exit</code></td>
+<td>End session</td>
+</tr>
+</tbody>
+</table>
 <h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>Customize the AI</strong>: Edit <code>chatbot_agent.py</code> line 303 to use different Ollama models</li>
-<li><strong>Change appearance</strong>: Edit <code>static/css/style.css</code> for web UI colors</li>
-<li><strong>Add features</strong>: Check out <code>WEB_INTERFACE.md</code> for deployment options</li>
-<li><strong>Switch AI providers</strong>: See README for OpenAI/Anthropic examples</li>
+<li><a href="../WEB_INTERFACE/">Web Interface guide</a> — deployment, customization, API endpoints</li>
+<li><a href="../SUB_AGENTS/">Sub-Agents docs</a> — how real-time data fetching works</li>
+<li><a href="../PLUGIN_GUIDE/">Plugin Guide</a> — create your own agents</li>
+<li><a href="../reference/">Reference</a> — full API, database schema, extending with cloud providers</li>
 </ol>
-<h2 id="need-help">Need Help?<a class="headerlink" href="#need-help" title="Permanent link">&para;</a></h2>
-<ul>
-<li>📖 Full docs: <a href="../">Home</a></li>
-<li>🌐 Web interface guide: <a href="../WEB_INTERFACE/">WEB_INTERFACE.md</a></li>
-<li>💻 Code examples: <code>example_usage.py</code> and <code>test_ollama.py</code></li>
-</ul>
-<h2 id="file-structure">File Structure<a class="headerlink" href="#file-structure" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>local-agent-with-memory/
-<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>├── chatbot_agent.py      # Core chatbot logic
-<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>├── web_app.py            # Flask web server
-<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>├── run_web.sh            # Web interface launcher
-<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>├── run.sh                # CLI launcher
-<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>├── templates/
-<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>│   └── chat.html         # Web UI template
-<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>├── static/
-<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>│   ├── css/style.css     # Styling
-<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>│   └── js/chat.js        # Frontend logic
-<a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a>└── *.db                  # SQLite databases (auto-created)
-</code></pre></div>
-<p>Happy chatting! 🚀</p>
 
 
 
