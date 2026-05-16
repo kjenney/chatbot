@@ -67,13 +67,15 @@ def test_last_agent_calls_failed_agent(chatbot):
 
 
 def test_last_agent_calls_reset_on_respond(chatbot):
-    """Stale _last_agent_calls from previous respond() call is cleared"""
+    """respond() resets stale _last_agent_calls from a previous call"""
+    # Inject stale data as if a previous respond() had run agents
     chatbot._last_agent_calls = [{"agent": "stale", "success": True, "latency_ms": 0}]
 
-    with patch.object(chatbot, '_execute_sub_agents_if_needed', return_value="") as mock_exec, \
+    with patch.object(chatbot, '_execute_sub_agents_if_needed', return_value=""), \
          patch.object(chatbot, '_get_cross_session_context', return_value=""), \
          patch('ollama.chat', return_value={'message': {'content': 'hi'}}):
-        mock_exec.side_effect = lambda q: chatbot.__dict__.update({'_last_agent_calls': []}) or ""
         chatbot.respond("hello")
 
+    # _last_agent_calls should be [] because respond() resets it at the top,
+    # and _execute_sub_agents_if_needed was mocked to return "" without setting it
     assert chatbot._last_agent_calls == []

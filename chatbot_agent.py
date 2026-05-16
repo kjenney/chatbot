@@ -9,6 +9,7 @@ from typing import List, Dict, Optional, Any
 import ollama
 from sub_agents import AgentOrchestrator
 import re
+import time
 
 
 class PersistentChatbot:
@@ -493,11 +494,11 @@ class PersistentChatbot:
         if not agent_tasks:
             return ""
 
-        import time as _time
-        start = _time.time()
+        start = time.time()
         try:
             results = self.orchestrator.execute_agents(agent_tasks, timeout=10)
-            elapsed_ms = int((_time.time() - start) * 1000)
+            results = results or []
+            elapsed_ms = int((time.time() - start) * 1000)
             self._last_agent_calls = [
                 {
                     "agent": r.get("agent", "unknown"),
