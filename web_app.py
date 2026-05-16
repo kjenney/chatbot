@@ -157,7 +157,8 @@ def chat():
             'success': True,
             'user_message': user_message,
             'bot_response': response,
-            'session_id': chatbot.current_session_id or session_id
+            'session_id': chatbot.current_session_id or session_id,
+            'agents_called': chatbot._last_agent_calls,
         })
     except Exception as e:
         return jsonify({

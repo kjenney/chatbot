@@ -79,3 +79,41 @@ def test_last_agent_calls_reset_on_respond(chatbot):
     # _last_agent_calls should be [] because respond() resets it at the top,
     # and _execute_sub_agents_if_needed was mocked to return "" without setting it
     assert chatbot._last_agent_calls == []
+
+
+# --- web_app.py /api/chat tests ---
+
+def test_chat_response_includes_agents_called_field(client):
+    """agents_called field always present in /api/chat response"""
+    mock_chatbot = MagicMock()
+    mock_chatbot.current_session_id = 1
+    mock_chatbot.respond.return_value = "Hello!"
+    mock_chatbot._last_agent_calls = []
+
+    with patch('web_app.get_chatbot', return_value=mock_chatbot):
+        resp = client.post('/api/chat', json={"message": "hello", "session_id": 1})
+
+    data = resp.get_json()
+    assert data['success'] is True
+    assert 'agents_called' in data
+    assert data['agents_called'] == []
+
+
+def test_chat_response_agents_called_populated(client):
+    """agents_called contains metadata when agents ran"""
+    mock_chatbot = MagicMock()
+    mock_chatbot.current_session_id = 1
+    mock_chatbot.respond.return_value = "The time is 12:00"
+    mock_chatbot._last_agent_calls = [
+        {"agent": "time", "success": True, "latency_ms": 15}
+    ]
+
+    with patch('web_app.get_chatbot', return_value=mock_chatbot):
+        resp = client.post('/api/chat', json={"message": "what time is it?", "session_id": 1})
+
+    data = resp.get_json()
+    assert data['success'] is True
+    assert len(data['agents_called']) == 1
+    assert data['agents_called'][0]['agent'] == 'time'
+    assert data['agents_called'][0]['success'] is True
+    assert 'latency_ms' in data['agents_called'][0]
