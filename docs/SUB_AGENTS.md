@@ -95,7 +95,7 @@ Sub-agents run in **separate processes** for:
 Sub-agents are **enabled by default**. Just ask questions naturally:
 
 ```bash
-./run_web.sh
+python web_app.py
 ```
 
 ```

@@ -5,7 +5,7 @@
 Launch the web interface with one command:
 
 ```bash
-./run_web.sh
+python web_app.py
 ```
 
 Then open your browser to: **http://localhost:7000**
@@ -152,7 +152,7 @@ Set `FLASK_ENV=production` for production deployments:
 
 ```bash
 export FLASK_ENV=production
-./run_web.sh
+python web_app.py
 ```
 
 ## Troubleshooting

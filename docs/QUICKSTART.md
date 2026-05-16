@@ -47,7 +47,7 @@ pip install -r requirements.txt
 ### Option A: Web Interface (Recommended)
 
 ```bash
-./run_web.sh
+python web_app.py
 ```
 
 Then open: **http://localhost:7000**
@@ -61,7 +61,7 @@ Then open: **http://localhost:7000**
 ### Option B: Command Line Interface
 
 ```bash
-./run.sh
+python3 chatbot_agent.py
 ```
 
 Interactive terminal chat with full memory.
@@ -161,33 +161,38 @@ kill -9 <PID>
 # Try a different browser
 ```
 
+## Testing
+
+Verify Ollama integration:
+
+```bash
+source venv/bin/activate
+python3 tests/test_ollama.py
+```
+
+Run the full example script:
+
+```bash
+source venv/bin/activate
+python3 cmd/example_usage.py
+```
+
+This demonstrates basic conversation, session management, search, and memory persistence.
+
+## CLI Commands
+
+When running the command line interface:
+
+| Command | Action |
+|---------|--------|
+| *(any text)* | Chat with the bot |
+| `history` | Display full conversation history |
+| `search <query>` | Search messages across all sessions |
+| `quit` / `exit` | End session |
+
 ## Next Steps
 
-1. **Customize the AI**: Edit `chatbot_agent.py` line 303 to use different Ollama models
-2. **Change appearance**: Edit `static/css/style.css` for web UI colors
-3. **Add features**: Check out `WEB_INTERFACE.md` for deployment options
-4. **Switch AI providers**: See README for OpenAI/Anthropic examples
-
-## Need Help?
-
-- 📖 Full docs: [Home](index.md)
-- 🌐 Web interface guide: [WEB_INTERFACE.md](WEB_INTERFACE.md)
-- 💻 Code examples: `example_usage.py` and `test_ollama.py`
-
-## File Structure
-
-```
-local-agent-with-memory/
-├── chatbot_agent.py      # Core chatbot logic
-├── web_app.py            # Flask web server
-├── run_web.sh            # Web interface launcher
-├── run.sh                # CLI launcher
-├── templates/
-│   └── chat.html         # Web UI template
-├── static/
-│   ├── css/style.css     # Styling
-│   └── js/chat.js        # Frontend logic
-└── *.db                  # SQLite databases (auto-created)
-```
-
-Happy chatting! 🚀
+1. [Web Interface guide](WEB_INTERFACE.md) — deployment, customization, API endpoints
+2. [Sub-Agents docs](SUB_AGENTS.md) — how real-time data fetching works
+3. [Plugin Guide](PLUGIN_GUIDE.md) — create your own agents
+4. [Reference](reference.md) — full API, database schema, extending with cloud providers
