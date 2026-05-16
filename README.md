@@ -1,5 +1,7 @@
 # Persistent Chatbot Agent with Memory
 
+![Coverage](./coverage.svg)
+
 An AI chatbot with persistent memory, real-time sub-agent framework, and modern web interface — running locally via Ollama.
 
 📖 **Full documentation**: https://kjenney.github.io/chatbot/

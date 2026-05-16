@@ -1,2 +1,29 @@
-- name: Coverage Badge
-  uses: we-cli/coverage-badge-action@v1.0.1
+name: Coverage
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest-cov
+
+      - name: Run tests with coverage
+        run: pytest --cov=src --cov-report=json tests/ || true
+
+      - name: Coverage Badge
+        uses: we-cli/coverage-badge-action@v1.0.1
