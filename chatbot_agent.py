@@ -28,6 +28,7 @@ class PersistentChatbot:
         self.conn = None
         self.enable_sub_agents = enable_sub_agents
         self.model = model
+        self._last_agent_calls: list = []
         self.orchestrator = AgentOrchestrator() if enable_sub_agents else None
         self.initialize_database()
 
@@ -258,6 +259,7 @@ class PersistentChatbot:
         Returns:
             The chatbot's response
         """
+        self._last_agent_calls = []
         # Save user's message
         self.save_message('user', user_input)
 
@@ -491,10 +493,22 @@ class PersistentChatbot:
         if not agent_tasks:
             return ""
 
+        import time as _time
+        start = _time.time()
         try:
             results = self.orchestrator.execute_agents(agent_tasks, timeout=10)
+            elapsed_ms = int((_time.time() - start) * 1000)
+            self._last_agent_calls = [
+                {
+                    "agent": r.get("agent", "unknown"),
+                    "success": bool(r.get("success", False)),
+                    "latency_ms": elapsed_ms,
+                }
+                for r in results
+            ]
             return self._format_agent_results(results)
         except Exception as e:
+            self._last_agent_calls = []
             return f"[Sub-agent error: {str(e)}]"
 
     def _extract_location(self, text: str) -> Optional[str]:
