@@ -5,6 +5,8 @@ class ChatApp {
     constructor() {
         this.currentSessionId = null;
         this.isTyping = false;
+        this.advancedViewOn = localStorage.getItem('advancedView') === 'true';
+        this.agentDataMap = new WeakMap(); // maps message element -> agents_called array
 
         // DOM elements
         this.chatMessages = document.getElementById('chat-messages');
@@ -20,6 +22,7 @@ class ChatApp {
         this.searchInput = document.getElementById('search-input');
         this.searchResults = document.getElementById('search-results');
         this.modelSelect = document.getElementById('model-select');
+        this.advancedViewBtn = document.getElementById('advanced-view-btn');
 
         this.init();
     }
@@ -54,6 +57,56 @@ class ChatApp {
                 this.closeSearchModalHandler();
             }
         });
+
+        this.advancedViewBtn.addEventListener('click', () => this.toggleAdvancedView());
+
+        // Apply initial state
+        if (this.advancedViewOn) {
+            this.advancedViewBtn.classList.add('active');
+        }
+    }
+
+    toggleAdvancedView() {
+        this.advancedViewOn = !this.advancedViewOn;
+        localStorage.setItem('advancedView', this.advancedViewOn);
+        this.advancedViewBtn.classList.toggle('active', this.advancedViewOn);
+
+        // Re-render agent panels on all existing bot messages
+        const botMessages = this.chatMessages.querySelectorAll('.message.bot');
+        botMessages.forEach(el => {
+            const agentsCalled = this.agentDataMap.get(el) || [];
+            // Remove existing panel if present
+            const existing = el.querySelector('.agent-panel');
+            if (existing) existing.remove();
+            // Render panel if view is on and agents ran
+            if (this.advancedViewOn && agentsCalled.length > 0) {
+                el.appendChild(this._buildAgentPanel(agentsCalled));
+            }
+        });
+    }
+
+    _buildAgentPanel(agentsCalled) {
+        const details = document.createElement('details');
+        details.className = 'agent-panel';
+
+        const summary = document.createElement('summary');
+        summary.textContent = `${agentsCalled.length} agent${agentsCalled.length !== 1 ? 's' : ''} called`;
+        details.appendChild(summary);
+
+        const pillsDiv = document.createElement('div');
+        pillsDiv.className = 'agent-pills';
+
+        agentsCalled.forEach(a => {
+            const pill = document.createElement('span');
+            pill.className = `agent-pill ${a.success ? 'success' : 'fail'}`;
+            const icon = a.success ? '✓' : '✗';
+            const latency = a.success ? ` ${a.latency_ms}ms` : ' timeout';
+            pill.textContent = `${a.agent} ${icon}${latency}`;
+            pillsDiv.appendChild(pill);
+        });
+
+        details.appendChild(pillsDiv);
+        return details;
     }
 
     async loadModels() {
@@ -234,7 +287,7 @@ class ChatApp {
                 }
 
                 // Add bot response to UI
-                this.addMessageToUI('bot', data.bot_response, new Date().toISOString(), true);
+                this.addMessageToUI('bot', data.bot_response, new Date().toISOString(), true, data.agents_called || []);
             } else {
                 alert('Error: ' + data.error);
             }
@@ -249,7 +302,7 @@ class ChatApp {
         }
     }
 
-    addMessageToUI(role, content, timestamp, animate = true) {
+    addMessageToUI(role, content, timestamp, animate = true, agentsCalled = []) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${role}`;
         if (animate) {
@@ -270,6 +323,14 @@ class ChatApp {
         contentDiv.appendChild(textDiv);
         contentDiv.appendChild(timeDiv);
         messageDiv.appendChild(contentDiv);
+
+        // Store agent data on the element for toggle re-render
+        if (role === 'bot' && agentsCalled.length > 0) {
+            this.agentDataMap.set(messageDiv, agentsCalled);
+            if (this.advancedViewOn) {
+                messageDiv.appendChild(this._buildAgentPanel(agentsCalled));
+            }
+        }
 
         this.chatMessages.appendChild(messageDiv);
 
