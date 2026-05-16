@@ -101,7 +101,7 @@ Sub-agents run in **separate processes** for:
 Sub-agents are **enabled by default**. Just ask questions naturally:
 
 ```bash
-python web_app.py
+python3 src/web_app.py
 ```
 
 ```
@@ -116,6 +116,7 @@ Bot: The calculation 156 × 23 equals 3,588.
 ### Programmatic Usage
 
 ```python
+import sys; sys.path.insert(0, 'src')
 from chatbot_agent import PersistentChatbot
 
 # Enable sub-agents (default)

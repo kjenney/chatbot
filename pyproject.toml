@@ -2,3 +2,9 @@
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
+
+[tool.coverage.run]
+omit = ["tests/*", "benchmark.py", "cmd/*", "examples/*", "site/*"]
+
+[tool.coverage.report]
+omit = ["tests/*", "benchmark.py", "cmd/*", "examples/*", "site/*"]

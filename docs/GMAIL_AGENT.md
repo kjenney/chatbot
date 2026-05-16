@@ -65,9 +65,10 @@ Save the downloaded JSON file as `gmail_credentials.json` in the project root:
 ```
 ai-chatbot/
 ├── gmail_credentials.json   ← put it here
-├── agents/
-│   └── gmail_agent.py
-├── chatbot_agent.py
+├── src/
+│   ├── agents/
+│   │   └── gmail_agent.py
+│   └── chatbot_agent.py
 └── ...
 ```
 

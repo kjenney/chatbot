@@ -185,7 +185,7 @@ Your `execute()` method **must** return a dictionary with these keys:
 
 ## Auto-Detection in Chatbot
 
-To make your agent trigger automatically, update `chatbot_agent.py`:
+To make your agent trigger automatically, update `src/chatbot_agent.py`:
 
 ```python
 # In _execute_sub_agents_if_needed() method

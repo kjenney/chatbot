@@ -47,7 +47,7 @@ pip install -r requirements.txt
 ### Option A: Web Interface (Recommended)
 
 ```bash
-python web_app.py
+python3 src/web_app.py
 ```
 
 Then open: **http://localhost:7000**
@@ -61,7 +61,7 @@ Then open: **http://localhost:7000**
 ### Option B: Command Line Interface
 
 ```bash
-python3 chatbot_agent.py
+python3 src/chatbot_agent.py
 ```
 
 Interactive terminal chat with full memory.
@@ -69,6 +69,8 @@ Interactive terminal chat with full memory.
 ### Option C: Programmatic Usage
 
 ```python
+import sys
+sys.path.insert(0, 'src')
 from chatbot_agent import PersistentChatbot
 
 chatbot = PersistentChatbot()
@@ -151,7 +153,7 @@ pip install -r requirements.txt
 lsof -i :7000
 kill -9 <PID>
 
-# Or change port in web_app.py (line 200)
+# Or change port in src/web_app.py (line 200)
 ```
 
 ### Web interface not loading

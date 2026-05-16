@@ -5,7 +5,7 @@
 Launch the web interface with one command:
 
 ```bash
-python web_app.py
+python3 src/web_app.py
 ```
 
 Then open your browser to: **http://localhost:7000**
@@ -43,10 +43,10 @@ Then open your browser to: **http://localhost:7000**
 ## Architecture
 
 ### Backend (Flask)
-- `web_app.py` - Main Flask application
+- `src/web_app.py` - Main Flask application
 - RESTful API endpoints for all chat operations
 - Session management with Flask sessions
-- Integrates with existing `chatbot_agent.py`
+- Integrates with `src/chatbot_agent.py`
 
 ### Frontend
 - `templates/chat.html` - Main HTML template
@@ -84,7 +84,7 @@ Edit `static/css/style.css` and modify the CSS variables:
 ```
 
 ### Change Port
-Edit `web_app.py` line 200:
+Edit `src/web_app.py` line 200:
 
 ```python
 app.run(debug=True, host='0.0.0.0', port=7000)  # Change 7000 to your desired port
@@ -107,7 +107,7 @@ Use a production WSGI server like Gunicorn with SSL:
 
 ```bash
 pip install gunicorn
-gunicorn --certfile=cert.pem --keyfile=key.pem -b 0.0.0.0:443 web_app:app
+gunicorn --certfile=cert.pem --keyfile=key.pem -b 0.0.0.0:443 src.web_app:app
 ```
 
 ## Deployment
@@ -129,7 +129,7 @@ For production use, consider:
 1. **Gunicorn** (Production WSGI server)
 ```bash
 pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:7000 web_app:app
+PYTHONPATH=src gunicorn -w 4 -b 0.0.0.0:7000 web_app:app
 ```
 
 2. **Nginx** (Reverse proxy)
@@ -153,6 +153,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY . .
+ENV PYTHONPATH=/app/src
 CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:7000", "web_app:app"]
 ```
 
@@ -161,13 +162,13 @@ Set `FLASK_ENV=production` for production deployments:
 
 ```bash
 export FLASK_ENV=production
-python web_app.py
+python3 src/web_app.py
 ```
 
 ## Troubleshooting
 
 ### Port Already in Use
-Change the port in `web_app.py` or kill the process using port 7000:
+Change the port in `src/web_app.py` or kill the process using port 7000:
 
 ```bash
 # Find process on port 7000
@@ -194,7 +195,7 @@ If you get database locked errors, make sure you're not running both the CLI and
 
 ⚠️ **Important for production:**
 
-1. Change the secret key in `web_app.py`:
+1. Change the secret key in `src/web_app.py`:
 ```python
 app.secret_key = 'your-secure-random-key-here'
 ```

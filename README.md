@@ -28,7 +28,7 @@ pip install -r requirements.txt
 ### Web Interface (Recommended)
 
 ```bash
-python3 web_app.py
+python3 src/web_app.py
 ```
 
 Open **http://localhost:7000**
@@ -36,12 +36,14 @@ Open **http://localhost:7000**
 ### Command Line
 
 ```bash
-python3 chatbot_agent.py
+python3 src/chatbot_agent.py
 ```
 
 ### Programmatic
 
 ```python
+import sys
+sys.path.insert(0, 'src')
 from chatbot_agent import PersistentChatbot
 
 chatbot = PersistentChatbot("my_chatbot.db")

@@ -53,7 +53,7 @@ cd chatbot
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 ollama pull qwen3:8b
-python3 web_app.py
+python3 src/web_app.py
 ```
 
 Then open **http://localhost:7000**.

@@ -1,4 +1,6 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+_root = os.path.dirname(os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(_root, 'src'))
+sys.path.insert(0, _root)

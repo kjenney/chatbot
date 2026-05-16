@@ -70,40 +70,9 @@ chatbot.close()
 
 ---
 
-## Project Structure
-
-```
-chatbot/
-├── chatbot_agent.py       # Core chatbot — memory, session, sub-agent dispatch
-├── sub_agents.py          # Agent orchestrator (multiprocessing)
-├── web_app.py             # Flask web server
-├── agents/                # Plugin directory — drop files here to add agents
-│   ├── __init__.py        # Auto-discovery
-│   ├── base_agent.py      # Base class for all agents
-│   ├── weather_agent.py
-│   ├── time_agent.py
-│   ├── calculator_agent.py
-│   └── web_search_agent.py
-├── templates/
-│   └── chat.html          # Web UI template
-├── static/
-│   ├── css/style.css
-│   └── js/chat.js
-├── tests/
-│   ├── test_ollama.py
-│   ├── test_sub_agents.py
-│   └── test_cross_session_memory.py
-├── docs/                  # MkDocs source
-├── mkdocs.yml
-├── requirements.txt
-└── docs-requirements.txt
-```
-
----
-
 ## CLI Commands
 
-When running `python3 chatbot_agent.py` interactively:
+When running `python3 src/chatbot_agent.py` interactively:
 
 | Command | Action |
 |---------|--------|
@@ -134,7 +103,7 @@ Run `ollama list` to see installed models, or browse [ollama.ai/library](https:/
 
 ### Use a Cloud Provider
 
-Replace `_generate_response()` in `chatbot_agent.py`:
+Replace `_generate_response()` in `src/chatbot_agent.py`:
 
 === "OpenAI"
 
