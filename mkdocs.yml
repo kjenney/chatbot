@@ -50,5 +50,6 @@ nav:
   - Sub-Agents:
     - Overview: SUB_AGENTS.md
     - Gmail Agent: GMAIL_AGENT.md
+  - Benchmarking: BENCHMARKING.md
   - Plugin Guide: PLUGIN_GUIDE.md
   - Reference: reference.md
