@@ -1,0 +1,26 @@
+{
+  "agent": "calculator",
+  "cases": [
+    {
+      "id": "calc_addition",
+      "input": "What is 12 + 45?",
+      "expected_keywords": ["57"],
+      "expected_patterns": [],
+      "max_latency_ms": 30000
+    },
+    {
+      "id": "calc_multiplication",
+      "input": "Calculate 7 * 8",
+      "expected_keywords": ["56"],
+      "expected_patterns": [],
+      "max_latency_ms": 30000
+    },
+    {
+      "id": "calc_division",
+      "input": "What is 100 divided by 4?",
+      "expected_keywords": ["25"],
+      "expected_patterns": [],
+      "max_latency_ms": 30000
+    }
+  ]
+}

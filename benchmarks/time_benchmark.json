@@ -1,0 +1,19 @@
+{
+  "agent": "time",
+  "cases": [
+    {
+      "id": "time_current",
+      "input": "What time is it?",
+      "expected_keywords": [],
+      "expected_patterns": ["\\d{1,2}:\\d{2}"],
+      "max_latency_ms": 25000
+    },
+    {
+      "id": "time_date",
+      "input": "What is today's date?",
+      "expected_keywords": [],
+      "expected_patterns": ["\\d{4}"],
+      "max_latency_ms": 25000
+    }
+  ]
+}

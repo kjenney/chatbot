@@ -1,0 +1,12 @@
+{
+  "agent": "gmail",
+  "cases": [
+    {
+      "id": "gmail_inbox",
+      "input": "Check my Gmail inbox",
+      "expected_keywords": [],
+      "expected_patterns": [],
+      "max_latency_ms": 25000
+    }
+  ]
+}

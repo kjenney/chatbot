@@ -1,0 +1,19 @@
+{
+  "agent": "web_search",
+  "cases": [
+    {
+      "id": "search_factual",
+      "input": "Search for Python programming language",
+      "expected_keywords": ["Python"],
+      "expected_patterns": [],
+      "max_latency_ms": 25000
+    },
+    {
+      "id": "search_technology",
+      "input": "Tell me about machine learning",
+      "expected_keywords": ["machine"],
+      "expected_patterns": [],
+      "max_latency_ms": 25000
+    }
+  ]
+}

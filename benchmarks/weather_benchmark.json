@@ -1,0 +1,19 @@
+{
+  "agent": "weather",
+  "cases": [
+    {
+      "id": "weather_city",
+      "input": "What is the weather in London?",
+      "expected_keywords": ["weather", "temperature"],
+      "expected_patterns": ["\\d+°", "\\d+\\s*°"],
+      "max_latency_ms": 25000
+    },
+    {
+      "id": "weather_fahrenheit",
+      "input": "Tell me the weather in New York",
+      "expected_keywords": ["weather"],
+      "expected_patterns": [],
+      "max_latency_ms": 25000
+    }
+  ]
+}
