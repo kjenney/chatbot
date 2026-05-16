@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://kjenney.github.io/chatbot/</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://kjenney.github.io/chatbot/PLUGIN_GUIDE/</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://kjenney.github.io/chatbot/QUICKSTART/</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://kjenney.github.io/chatbot/SUB_AGENTS/</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+    <url>
+         <loc>https://kjenney.github.io/chatbot/WEB_INTERFACE/</loc>
+         <lastmod>2026-05-16</lastmod>
+    </url>
+</urlset>
