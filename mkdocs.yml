@@ -47,6 +47,8 @@ nav:
   - Home: index.md
   - Quick Start: QUICKSTART.md
   - Web Interface: WEB_INTERFACE.md
-  - Sub-Agents: SUB_AGENTS.md
+  - Sub-Agents:
+    - Overview: SUB_AGENTS.md
+    - Gmail Agent: GMAIL_AGENT.md
   - Plugin Guide: PLUGIN_GUIDE.md
   - Reference: reference.md

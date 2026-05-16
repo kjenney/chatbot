@@ -30,6 +30,11 @@ The chatbot automatically detects when you need real-time information and spawns
 - "Tell me about Python programming"
 - "Who is Alan Turing?"
 
+**Gmail / Email**
+- "Check my email"
+- "Summarize my unread emails"
+- "What's in my inbox?"
+
 ### 🚀 Parallel Execution
 
 Sub-agents run in **separate processes** for:
@@ -44,6 +49,7 @@ Sub-agents run in **separate processes** for:
 2. **TimeAgent** - Gets current date/time information
 3. **CalculatorAgent** - Performs mathematical calculations safely
 4. **WebSearchAgent** - Searches the web using DuckDuckGo API
+5. **GmailAgent** - Fetches and summarizes emails from your Gmail inbox (requires OAuth2 setup — see [Gmail Agent](GMAIL_AGENT.md))
 
 ## Architecture
 
@@ -269,11 +275,13 @@ This tests:
 
 ## API Keys
 
-Current sub-agents use **free, public APIs** that don't require keys:
+Most sub-agents use **free, public APIs** that don't require keys:
 - Weather: wttr.in (free, no key needed)
 - Web Search: DuckDuckGo (free, no key needed)
 - Time: Local system time
 - Calculator: Local Python evaluation
+
+**Gmail** requires OAuth2 credentials from Google Cloud Console. See the [Gmail Agent setup guide](GMAIL_AGENT.md) for step-by-step instructions.
 
 To add APIs that require keys, use environment variables:
 

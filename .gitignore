@@ -31,6 +31,10 @@ build/
 # MkDocs
 site/
 
+# Gmail OAuth tokens (never commit)
+gmail_token.json
+gmail_credentials.json
+
 # OS
 .DS_Store
 Thumbs.db

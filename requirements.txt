@@ -4,6 +4,11 @@ flask>=3.0.0
 requests>=2.31.0
 ddgs>=9.14.0
 
+# Gmail agent
+google-api-python-client>=2.100.0
+google-auth-httplib2>=0.2.0
+google-auth-oauthlib>=1.1.0
+
 # Note: SQLite3 is included in Python's standard library
 
 # Optional: For other AI providers (if you want to switch)

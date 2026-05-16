@@ -460,6 +460,19 @@ class PersistentChatbot:
                     'params': {'expression': expression}
                 })
 
+        # Detect Gmail queries
+        gmail_keywords = ['my email', 'my emails', 'check email', 'check my email', 'inbox',
+                         'unread email', 'unread emails', 'gmail', 'new email', 'new emails',
+                         'email summary', 'summarize email', 'summarize my email']
+        if any(keyword in user_input_lower for keyword in gmail_keywords):
+            query = 'is:unread'
+            if 'all' in user_input_lower or 'recent' in user_input_lower:
+                query = 'in:inbox'
+            agent_tasks.append({
+                'agent': 'gmail',
+                'params': {'max_emails': 10, 'query': query}
+            })
+
         # Detect web search queries
         search_keywords = ['search for', 'search the web', 'look up', 'find information', 'what is', 'who is', 'tell me about']
         # Only search if not asking about personal info or memory
@@ -582,6 +595,21 @@ class PersistentChatbot:
                     formatted_parts.append(
                         f"Calculation: {calc.get('expression', 'N/A')} = {calc.get('result', 'N/A')}"
                     )
+
+            elif agent_name == 'gmail':
+                if 'data' in data:
+                    gmail = data['data']
+                    emails = gmail.get('emails', [])
+                    if not emails:
+                        formatted_parts.append(f"Gmail: No emails found for query '{gmail.get('query', '')}'.")
+                    else:
+                        lines = [f"Gmail ({gmail.get('count', 0)} emails, query: '{gmail.get('query', '')}'):"]
+                        for i, email in enumerate(emails, 1):
+                            lines.append(
+                                f"{i}. From: {email['from']} | Subject: {email['subject']} | "
+                                f"Date: {email['date']}\n   Preview: {email['snippet']}"
+                            )
+                        formatted_parts.append('\n'.join(lines))
 
             elif agent_name == 'web_search':
                 if 'data' in data:
