@@ -536,6 +536,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#model-selector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model Selector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#session-management" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1044,6 +1055,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#model-selector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model Selector
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#session-management" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1349,6 +1371,12 @@
 <li>Auto-scrolling to latest messages</li>
 <li>Textarea auto-resize</li>
 </ul>
+<h3 id="model-selector">Model Selector<a class="headerlink" href="#model-selector" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Dropdown in the header lists all models installed in Ollama</li>
+<li>Switch models per-message — no restart required</li>
+<li>Defaults to <code>qwen3:8b</code> when available; falls back to the first installed model</li>
+</ul>
 <h3 id="session-management">Session Management<a class="headerlink" href="#session-management" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Sidebar</strong> showing all your conversation sessions</li>
@@ -1398,6 +1426,11 @@
 <td>Main chat interface</td>
 </tr>
 <tr>
+<td><code>/api/models</code></td>
+<td>GET</td>
+<td>List installed Ollama models</td>
+</tr>
+<tr>
 <td><code>/api/sessions</code></td>
 <td>GET</td>
 <td>List all sessions</td>
@@ -1415,7 +1448,7 @@
 <tr>
 <td><code>/api/chat</code></td>
 <td>POST</td>
-<td>Send message and get response</td>
+<td>Send message and get response (accepts optional <code>model</code> field)</td>
 </tr>
 <tr>
 <td><code>/api/history</code></td>

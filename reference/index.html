@@ -1071,8 +1071,9 @@
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">chatbot_agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">PersistentChatbot</span>
 </code></pre></div>
 <h3 id="constructor">Constructor<a class="headerlink" href="#constructor" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">PersistentChatbot</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;chatbot_memory.db&quot;</span><span class="p">,</span> <span class="n">enable_sub_agents</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">PersistentChatbot</span><span class="p">(</span><span class="n">db_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;chatbot_memory.db&quot;</span><span class="p">,</span> <span class="n">enable_sub_agents</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;qwen3:8b&quot;</span><span class="p">)</span>
 </code></pre></div>
+<p><code>model</code> sets the default Ollama model. Can be overridden per-call in <code>respond()</code>.</p>
 <h3 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1107,8 +1108,8 @@
 <td>Full-text search across all sessions</td>
 </tr>
 <tr>
-<td><code>respond(user_input)</code></td>
-<td>Generate and save a response, returns <code>str</code></td>
+<td><code>respond(user_input, model=None)</code></td>
+<td>Generate and save a response; <code>model</code> overrides the instance default, returns <code>str</code></td>
 </tr>
 <tr>
 <td><code>close()</code></td>
@@ -1261,11 +1262,13 @@
 <hr />
 <h2 id="extending-the-chatbot">Extending the Chatbot<a class="headerlink" href="#extending-the-chatbot" title="Permanent link">&para;</a></h2>
 <h3 id="switch-ollama-model">Switch Ollama Model<a class="headerlink" href="#switch-ollama-model" title="Permanent link">&para;</a></h3>
-<p>Edit <code>chatbot_agent.py</code> — change the model name in <code>_generate_response</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">response</span> <span class="o">=</span> <span class="n">ollama</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">model</span><span class="o">=</span><span class="s1">&#39;llama3.2&#39;</span><span class="p">,</span>  <span class="c1"># or &#39;mistral&#39;, &#39;gemma3:12b&#39;, etc.</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">messages</span><span class="o">=</span><span class="n">messages</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">)</span>
+<p><strong>Web UI</strong>: Use the model dropdown in the header — lists all installed Ollama models, switches per-message without restart.</p>
+<p><strong>Programmatic</strong>: Pass <code>model</code> to the constructor or to <code>respond()</code>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Set a default for the whole session</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">chatbot</span> <span class="o">=</span> <span class="n">PersistentChatbot</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s1">&#39;llama3.2&#39;</span><span class="p">)</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Or override per-message</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">response</span> <span class="o">=</span> <span class="n">chatbot</span><span class="o">.</span><span class="n">respond</span><span class="p">(</span><span class="s2">&quot;Hello!&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;gemma3:12b&#39;</span><span class="p">)</span>
 </code></pre></div>
 <p>Run <code>ollama list</code> to see installed models, or browse <a href="https://ollama.ai/library">ollama.ai/library</a>.</p>
 <h3 id="use-a-cloud-provider">Use a Cloud Provider<a class="headerlink" href="#use-a-cloud-provider" title="Permanent link">&para;</a></h3>

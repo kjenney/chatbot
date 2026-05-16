@@ -836,7 +836,7 @@
 <p>An AI chatbot with persistent memory, a real-time sub-agent framework, and a modern web interface — running entirely locally via Ollama.</p>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>AI-Powered Responses</strong> — Ollama with Qwen3:8b for intelligent conversations</li>
+<li><strong>AI-Powered Responses</strong> — Ollama with selectable models (defaults to <code>qwen3:8b</code>)</li>
 <li><strong>Persistent Memory</strong> — all conversations stored in SQLite across sessions</li>
 <li><strong>Cross-Session Memory</strong> — recalls user details from past conversations</li>
 <li><strong>Sub-Agent Framework</strong> — plugin-based system spawning parallel processes to query APIs<ul>
@@ -896,7 +896,7 @@
 </ul>
 <h2 id="tech-stack">Tech Stack<a class="headerlink" href="#tech-stack" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>LLM</strong>: <a href="https://ollama.ai">Ollama</a> with <code>qwen3:8b</code></li>
+<li><strong>LLM</strong>: <a href="https://ollama.ai">Ollama</a> — any locally installed model, selectable from the UI</li>
 <li><strong>Backend</strong>: Python + Flask</li>
 <li><strong>Storage</strong>: SQLite (standard library, zero config)</li>
 <li><strong>Search</strong>: DuckDuckGo via <code>ddgs</code></li>
