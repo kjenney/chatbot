@@ -152,6 +152,49 @@ Query raw results directly:
 sqlite3 web_chatbot.db "SELECT agent_name, case_id, passed, latency_ms FROM benchmark_results ORDER BY timestamp DESC LIMIT 20;"
 ```
 
+## Web UI Report
+
+The web interface includes a Benchmark Reports page that displays stored results directly from `web_chatbot.db`.
+
+### Accessing the Report
+
+Navigate to **http://localhost:7000/benchmarks** after starting the web server. A waveform icon in the chat header also links to this page.
+
+### Runs Table
+
+Each row represents one benchmark run (a single invocation of `python3 benchmark.py`):
+
+| Column | Description |
+|---|---|
+| Timestamp | When the run started |
+| Model | Ollama model used |
+| Agents | Number of distinct agents tested |
+| Pass Rate | Percentage of cases that passed |
+| Cases | Passed / total case count |
+| Avg Latency | Mean response time across all cases |
+
+Click any row to expand the individual case results for that run.
+
+### Case Detail View
+
+Expanded rows show all cases grouped by agent:
+
+| Column | Description |
+|---|---|
+| Case ID | Unique identifier from the benchmark JSON |
+| Input | The prompt sent to the chatbot |
+| Response | Truncated chatbot response |
+| Correctness | Percentage of expected keywords/patterns matched |
+| Latency / Status | Response time and PASS/FAIL result |
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/benchmarks` | GET | Benchmark Reports UI |
+| `/api/benchmarks/runs` | GET | All runs with summary stats (JSON) |
+| `/api/benchmarks/runs/<run_id>` | GET | Case-level results for a specific run (JSON) |
+
 ## Iterative Improvement Workflow
 
 1. Run `python3 benchmark.py` to get a baseline

@@ -65,6 +65,9 @@ Then open your browser to: **http://localhost:7000**
 | `/api/chat` | POST | Send message and get response (accepts optional `model` field) |
 | `/api/history` | GET | Get current session history |
 | `/api/search` | POST | Search all messages |
+| `/benchmarks` | GET | Benchmark Reports UI |
+| `/api/benchmarks/runs` | GET | List all benchmark runs with summary stats |
+| `/api/benchmarks/runs/<run_id>` | GET | Case-level results for a specific run |
 
 ## Customization
 
