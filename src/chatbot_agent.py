@@ -490,13 +490,25 @@ class PersistentChatbot:
                     'params': {'query': query, 'max_results': 5}
                 })
 
+        # Detect git repository queries (HTTPS and SSH URLs)
+        _GIT_HTTPS_RE = r'https?://(?:github\.com|gitlab\.com|bitbucket\.org)/[\w\-\.]+/[\w\-\.]+'
+        _GIT_SSH_RE = r'git@(?:github\.com|gitlab\.com|bitbucket\.org):[\w\-\.]+/[\w\-\.]+(?:\.git)?'
+        git_url_match = re.search(_GIT_HTTPS_RE, user_input) or re.search(_GIT_SSH_RE, user_input)
+        git_keywords = ['clone this repo', 'clone repo', 'explore this repo', 'analyze this repo',
+                        'look at this repo', 'examine this repo', 'check this repo']
+        if git_url_match or any(kw in user_input_lower for kw in git_keywords):
+            repo_url = git_url_match.group(0) if git_url_match else None
+            if repo_url:
+                agent_tasks.append({'agent': 'git_repo', 'params': {'repo_url': repo_url}})
+
         # Execute agents if any were triggered
         if not agent_tasks:
             return ""
 
+        git_timeout = 60 if any(t['agent'] == 'git_repo' for t in agent_tasks) else 10
         start = time.time()
         try:
-            results = self.orchestrator.execute_agents(agent_tasks, timeout=10)
+            results = self.orchestrator.execute_agents(agent_tasks, timeout=git_timeout)
             results = results or []
             elapsed_ms = int((time.time() - start) * 1000)
             # latency_ms is wall-clock time for the full parallel batch, not per-agent
@@ -570,6 +582,13 @@ class PersistentChatbot:
 
         return query if len(query) > 2 else None
 
+    def _extract_repo_url(self, text: str) -> Optional[str]:
+        """Extract a git repository URL (HTTPS or SSH) from user input"""
+        https_pat = r'https?://(?:github\.com|gitlab\.com|bitbucket\.org)/[\w\-\.]+/[\w\-\.]+'
+        ssh_pat = r'git@(?:github\.com|gitlab\.com|bitbucket\.org):[\w\-\.]+/[\w\-\.]+(?:\.git)?'
+        match = re.search(https_pat, text) or re.search(ssh_pat, text)
+        return match.group(0) if match else None
+
     def _format_agent_results(self, results: List[Dict[str, Any]]) -> str:
         """Format sub-agent results for inclusion in the AI prompt"""
         if not results:
@@ -641,6 +660,30 @@ class PersistentChatbot:
                             f"Web search results for '{search.get('query', 'N/A')}':\n" +
                             '\n'.join(f"- {p}" for p in parts)
                         )
+
+            elif agent_name == 'git_repo':
+                if 'data' in data:
+                    repo = data['data']
+                    lines = [f"Git Repository: {repo.get('repo_url', 'unknown')}"]
+                    if repo.get('clone_path'):
+                        lines.append(f"Cloned to: {repo['clone_path']}")
+                    if repo.get('branch'):
+                        lines.append(f"Branch: {repo['branch']}")
+                    lines.append(f"Files: {repo.get('total_files', 0)}, Dirs: {repo.get('total_dirs', 0)}")
+                    if repo.get('language_stats'):
+                        stats = ', '.join(f"{ext}: {cnt}" for ext, cnt in repo['language_stats'].items())
+                        lines.append(f"Languages (by file count): {stats}")
+                    if repo.get('config_files_present'):
+                        lines.append(f"Config/build files: {', '.join(repo['config_files_present'])}")
+                    if repo.get('readme'):
+                        lines.append(f"\nREADME excerpt:\n{repo['readme']}")
+                    if repo.get('file_tree'):
+                        tree_preview = repo['file_tree'][:50]
+                        lines.append(
+                            f"\nFile tree (first {len(tree_preview)} of {repo.get('total_files', 0)}):\n" +
+                            '\n'.join(tree_preview)
+                        )
+                    formatted_parts.append('\n'.join(lines))
 
         return '\n'.join(formatted_parts) if formatted_parts else ""
 

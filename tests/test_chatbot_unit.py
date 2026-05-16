@@ -613,6 +613,150 @@ def test_format_agent_results_multiple(bot):
     assert '1+1' in result
 
 
+# --- git_repo agent detection ---
+
+def test_execute_sub_agents_git_repo_url_detection():
+    bot = PersistentChatbot(":memory:", enable_sub_agents=True)
+    bot.start_new_session("t")
+    with patch.object(bot.orchestrator, 'execute_agents', return_value=[]) as mock_exec:
+        bot._execute_sub_agents_if_needed("analyze this repo https://github.com/user/myrepo")
+    tasks = mock_exec.call_args[0][0]
+    assert any(t['agent'] == 'git_repo' for t in tasks)
+    bot.close()
+
+
+def test_execute_sub_agents_git_repo_url_params():
+    bot = PersistentChatbot(":memory:", enable_sub_agents=True)
+    bot.start_new_session("t")
+    with patch.object(bot.orchestrator, 'execute_agents', return_value=[]) as mock_exec:
+        bot._execute_sub_agents_if_needed("explore this repo https://github.com/user/myrepo")
+    tasks = mock_exec.call_args[0][0]
+    git_task = next(t for t in tasks if t['agent'] == 'git_repo')
+    assert git_task['params']['repo_url'] == 'https://github.com/user/myrepo'
+    bot.close()
+
+
+def test_execute_sub_agents_git_repo_no_url_no_trigger():
+    bot = PersistentChatbot(":memory:", enable_sub_agents=True)
+    bot.start_new_session("t")
+    with patch.object(bot.orchestrator, 'execute_agents', return_value=[]) as mock_exec:
+        result = bot._execute_sub_agents_if_needed("tell me about repositories in general")
+    # No URL present, generic "repositories" not a trigger keyword — agent not called
+    if mock_exec.called:
+        tasks = mock_exec.call_args[0][0]
+        assert not any(t['agent'] == 'git_repo' for t in tasks)
+    bot.close()
+
+
+def test_execute_sub_agents_git_repo_ssh_url_detection():
+    bot = PersistentChatbot(":memory:", enable_sub_agents=True)
+    bot.start_new_session("t")
+    with patch.object(bot.orchestrator, 'execute_agents', return_value=[]) as mock_exec:
+        bot._execute_sub_agents_if_needed("Clone this repo git@github.com:kjenney/strategy-tester.git")
+    tasks = mock_exec.call_args[0][0]
+    assert any(t['agent'] == 'git_repo' for t in tasks)
+    git_task = next(t for t in tasks if t['agent'] == 'git_repo')
+    assert git_task['params']['repo_url'] == 'git@github.com:kjenney/strategy-tester.git'
+    bot.close()
+
+
+def test_execute_sub_agents_gitlab_url_detection():
+    bot = PersistentChatbot(":memory:", enable_sub_agents=True)
+    bot.start_new_session("t")
+    with patch.object(bot.orchestrator, 'execute_agents', return_value=[]) as mock_exec:
+        bot._execute_sub_agents_if_needed("look at this repo https://gitlab.com/org/project")
+    tasks = mock_exec.call_args[0][0]
+    assert any(t['agent'] == 'git_repo' for t in tasks)
+    bot.close()
+
+
+def test_execute_sub_agents_git_repo_timeout_elevated():
+    bot = PersistentChatbot(":memory:", enable_sub_agents=True)
+    bot.start_new_session("t")
+    with patch.object(bot.orchestrator, 'execute_agents', return_value=[]) as mock_exec:
+        bot._execute_sub_agents_if_needed("check this repo https://github.com/user/repo")
+    args, kwargs = mock_exec.call_args
+    # timeout is the second positional arg or keyword arg
+    timeout_used = kwargs.get('timeout', args[1] if len(args) > 1 else 10)
+    assert timeout_used >= 60
+    bot.close()
+
+
+# --- _extract_repo_url ---
+
+def test_extract_repo_url_github(bot):
+    result = bot._extract_repo_url("look at https://github.com/user/my-repo")
+    assert result == 'https://github.com/user/my-repo'
+
+
+def test_extract_repo_url_gitlab(bot):
+    result = bot._extract_repo_url("https://gitlab.com/org/project here")
+    assert result == 'https://gitlab.com/org/project'
+
+
+def test_extract_repo_url_bitbucket(bot):
+    result = bot._extract_repo_url("clone https://bitbucket.org/team/repo")
+    assert result == 'https://bitbucket.org/team/repo'
+
+
+def test_extract_repo_url_ssh(bot):
+    result = bot._extract_repo_url("clone git@github.com:user/my-repo.git")
+    assert result == 'git@github.com:user/my-repo.git'
+
+
+def test_extract_repo_url_not_found(bot):
+    result = bot._extract_repo_url("no url here")
+    assert result is None
+
+
+# --- _format_agent_results git_repo ---
+
+def test_format_agent_results_git_repo(bot):
+    results = [{
+        'agent': 'git_repo',
+        'success': True,
+        'data': {'data': {
+            'repo_url': 'https://github.com/user/repo',
+            'clone_path': '/tmp/git_repo_agent_abc123',
+            'branch': 'main',
+            'total_files': 10,
+            'total_dirs': 3,
+            'language_stats': {'py': 8, 'md': 2},
+            'config_files_present': ['Dockerfile', 'Makefile'],
+            'readme': 'This is a test project.',
+            'file_tree': ['app.py', 'README.md'],
+        }}
+    }]
+    result = bot._format_agent_results(results)
+    assert 'https://github.com/user/repo' in result
+    assert '/tmp/git_repo_agent_abc123' in result
+    assert 'main' in result
+    assert 'py: 8' in result
+    assert 'Dockerfile' in result
+    assert 'This is a test project.' in result
+    assert 'app.py' in result
+
+
+def test_format_agent_results_git_repo_no_readme(bot):
+    results = [{
+        'agent': 'git_repo',
+        'success': True,
+        'data': {'data': {
+            'repo_url': 'https://github.com/user/repo',
+            'branch': 'main',
+            'total_files': 5,
+            'total_dirs': 1,
+            'language_stats': {'py': 5},
+            'config_files_present': [],
+            'readme': None,
+            'file_tree': ['app.py'],
+        }}
+    }]
+    result = bot._format_agent_results(results)
+    assert 'README' not in result
+    assert 'https://github.com/user/repo' in result
+
+
 # --- close ---
 
 def test_close_idempotent():

@@ -11,6 +11,7 @@ google-auth-httplib2>=0.2.0
 google-auth-oauthlib>=1.1.0
 
 # Note: SQLite3 is included in Python's standard library
+# GitRepoAgent requires git to be installed and available in PATH
 
 # Testing
 pytest>=8.0.0
