@@ -8,6 +8,7 @@ from flask import Flask, render_template, request, jsonify, session, g
 from chatbot_agent import PersistentChatbot
 import os
 from datetime import datetime
+import ollama
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
@@ -32,6 +33,17 @@ def close_chatbot(error):
 def index():
     """Render the main chat interface"""
     return render_template('chat.html')
+
+
+@app.route('/api/models', methods=['GET'])
+def get_models():
+    """Get available Ollama models"""
+    try:
+        result = ollama.list()
+        models = [m.model for m in result.models]
+        return jsonify({'success': True, 'models': models})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e), 'models': []}), 500
 
 
 @app.route('/api/sessions', methods=['GET'])
@@ -109,6 +121,7 @@ def chat():
         chatbot = get_chatbot()
         data = request.get_json()
         user_message = data.get('message', '').strip()
+        model = data.get('model') or None
 
         if not user_message:
             return jsonify({
@@ -125,7 +138,7 @@ def chat():
             session['current_session_id'] = session_id
 
         # Get response from chatbot
-        response = chatbot.respond(user_message)
+        response = chatbot.respond(user_message, model=model)
 
         return jsonify({
             'success': True,

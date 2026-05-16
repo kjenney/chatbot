@@ -13,14 +13,14 @@ python3 --version
 # Check if Ollama is installed
 ollama --version
 
-# Check if qwen3:8b model is available
-ollama list | grep qwen3
+# Check installed models
+ollama list
 ```
 
-If you don't have Ollama or the model:
+If you don't have Ollama or any model:
 ```bash
 # Install Ollama from https://ollama.ai
-# Then pull the model:
+# Then pull a model (qwen3:8b is the default):
 ollama pull qwen3:8b
 ```
 
@@ -93,6 +93,7 @@ Try these to see the memory in action:
 ### Web Interface
 - **New Chat**: Click "New Chat" button
 - **Switch Sessions**: Click on any session in sidebar
+- **Switch Model**: Use the model dropdown in the header to change the Ollama model per-message
 - **Search**: Click search icon, type to find messages
 - **History**: All messages automatically saved
 

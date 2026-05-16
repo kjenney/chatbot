@@ -14,18 +14,20 @@ import re
 class PersistentChatbot:
     """A chatbot with persistent memory using SQLite"""
 
-    def __init__(self, db_path: str = "chatbot_memory.db", enable_sub_agents: bool = True):
+    def __init__(self, db_path: str = "chatbot_memory.db", enable_sub_agents: bool = True, model: str = "qwen3:8b"):
         """
         Initialize the chatbot with SQLite database
 
         Args:
             db_path: Path to the SQLite database file
             enable_sub_agents: Enable sub-agent functionality for API queries
+            model: Ollama model name to use for generation
         """
         self.db_path = db_path
         self.current_session_id = None
         self.conn = None
         self.enable_sub_agents = enable_sub_agents
+        self.model = model
         self.orchestrator = AgentOrchestrator() if enable_sub_agents else None
         self.initialize_database()
 
@@ -245,12 +247,13 @@ class PersistentChatbot:
 
         return "\n".join(context)
 
-    def respond(self, user_input: str) -> str:
+    def respond(self, user_input: str, model: Optional[str] = None) -> str:
         """
         Generate a response to user input (with memory context)
 
         Args:
             user_input: The user's message
+            model: Override the default model for this response
 
         Returns:
             The chatbot's response
@@ -261,27 +264,29 @@ class PersistentChatbot:
         # Get conversation context
         history = self.get_conversation_history(limit=10)
 
-        # Simple response logic (can be replaced with AI model)
-        response = self._generate_response(user_input, history)
+        response = self._generate_response(user_input, history, model=model or self.model)
 
         # Save assistant's response
         self.save_message('assistant', response)
 
         return response
 
-    def _generate_response(self, user_input: str, history: List[Dict]) -> str:
+    def _generate_response(self, user_input: str, history: List[Dict], model: Optional[str] = None) -> str:
         """
-        Generate a response using Ollama with qwen3:8b model
-        Searches across all previous conversations for relevant context
-        Uses sub-agents to fetch real-time information when needed
+        Generate a response using Ollama.
+        Searches across all previous conversations for relevant context.
+        Uses sub-agents to fetch real-time information when needed.
 
         Args:
             user_input: User's current message
             history: Conversation history
+            model: Ollama model name to use
 
         Returns:
             Response string from Ollama
         """
+        if model is None:
+            model = self.model
         try:
             # Execute sub-agents if needed for real-time information
             agent_results = self._execute_sub_agents_if_needed(user_input)
@@ -327,17 +332,12 @@ class PersistentChatbot:
                 'content': user_input
             })
 
-            # Call Ollama API with qwen3:8b model
-            response = ollama.chat(
-                model='qwen3:8b',
-                messages=messages
-            )
+            response = ollama.chat(model=model, messages=messages)
 
             return response['message']['content']
 
         except Exception as e:
-            # Fallback response if Ollama fails
-            return f"I apologize, but I encountered an error generating a response: {str(e)}. Please make sure Ollama is running and the qwen3:8b model is installed (run: ollama pull qwen3:8b)"
+            return f"Error generating response: {str(e)}. Make sure Ollama is running and the model '{model}' is installed (run: ollama pull {model})"
 
     def _get_cross_session_context(self, user_input: str, max_results: int = 5) -> str:
         """

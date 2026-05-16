@@ -30,9 +30,15 @@
             <header class="chat-header">
                 <div class="header-content">
                     <h1>AI Assistant</h1>
-                    <p class="subtitle">Powered by Ollama (qwen3:8b) with Persistent Memory</p>
+                    <p class="subtitle">Powered by Ollama with Persistent Memory</p>
                 </div>
                 <div class="header-actions">
+                    <div class="model-selector-wrapper">
+                        <label for="model-select" class="model-label">Model</label>
+                        <select id="model-select" class="model-select" title="Select AI model">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
                     <button id="search-btn" class="btn btn-icon" title="Search conversations">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -52,7 +58,7 @@
                 <div class="welcome-message">
                     <div class="welcome-icon">💬</div>
                     <h2>Welcome to Your AI Assistant</h2>
-                    <p>I'm powered by Ollama with the qwen3:8b model and have persistent memory.</p>
+                    <p>I'm powered by Ollama and have persistent memory.</p>
                     <p>I remember all our conversations across sessions. Start chatting below!</p>
                 </div>
             </div>

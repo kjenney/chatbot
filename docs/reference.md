@@ -9,8 +9,10 @@ from chatbot_agent import PersistentChatbot
 ### Constructor
 
 ```python
-PersistentChatbot(db_path: str = "chatbot_memory.db", enable_sub_agents: bool = True)
+PersistentChatbot(db_path: str = "chatbot_memory.db", enable_sub_agents: bool = True, model: str = "qwen3:8b")
 ```
+
+`model` sets the default Ollama model. Can be overridden per-call in `respond()`.
 
 ### Methods
 
@@ -22,7 +24,7 @@ PersistentChatbot(db_path: str = "chatbot_memory.db", enable_sub_agents: bool = 
 | `get_conversation_history(session_id, limit)` | Get messages for a session |
 | `list_sessions()` | List all sessions with message counts |
 | `search_messages(query)` | Full-text search across all sessions |
-| `respond(user_input)` | Generate and save a response, returns `str` |
+| `respond(user_input, model=None)` | Generate and save a response; `model` overrides the instance default, returns `str` |
 | `close()` | Close the database connection |
 
 ### Example
@@ -116,13 +118,16 @@ When running `python3 chatbot_agent.py` interactively:
 
 ### Switch Ollama Model
 
-Edit `chatbot_agent.py` — change the model name in `_generate_response`:
+**Web UI**: Use the model dropdown in the header — lists all installed Ollama models, switches per-message without restart.
+
+**Programmatic**: Pass `model` to the constructor or to `respond()`:
 
 ```python
-response = ollama.chat(
-    model='llama3.2',  # or 'mistral', 'gemma3:12b', etc.
-    messages=messages
-)
+# Set a default for the whole session
+chatbot = PersistentChatbot(model='llama3.2')
+
+# Or override per-message
+response = chatbot.respond("Hello!", model='gemma3:12b')
 ```
 
 Run `ollama list` to see installed models, or browse [ollama.ai/library](https://ollama.ai/library).

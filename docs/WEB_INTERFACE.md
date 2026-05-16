@@ -19,6 +19,11 @@ Then open your browser to: **http://localhost:7000**
 - Auto-scrolling to latest messages
 - Textarea auto-resize
 
+### Model Selector
+- Dropdown in the header lists all models installed in Ollama
+- Switch models per-message — no restart required
+- Defaults to `qwen3:8b` when available; falls back to the first installed model
+
 ### Session Management
 - **Sidebar** showing all your conversation sessions
 - Click any session to load and continue that conversation
@@ -53,10 +58,11 @@ Then open your browser to: **http://localhost:7000**
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/` | GET | Main chat interface |
+| `/api/models` | GET | List installed Ollama models |
 | `/api/sessions` | GET | List all sessions |
 | `/api/sessions` | POST | Create new session |
 | `/api/sessions/<id>` | GET | Load specific session |
-| `/api/chat` | POST | Send message and get response |
+| `/api/chat` | POST | Send message and get response (accepts optional `model` field) |
 | `/api/history` | GET | Get current session history |
 | `/api/search` | POST | Search all messages |
 

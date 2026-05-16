@@ -4,7 +4,7 @@ An AI chatbot with persistent memory, a real-time sub-agent framework, and a mod
 
 ## Features
 
-- **AI-Powered Responses** — Ollama with Qwen3:8b for intelligent conversations
+- **AI-Powered Responses** — Ollama with selectable models (defaults to `qwen3:8b`)
 - **Persistent Memory** — all conversations stored in SQLite across sessions
 - **Cross-Session Memory** — recalls user details from past conversations
 - **Sub-Agent Framework** — plugin-based system spawning parallel processes to query APIs
@@ -39,7 +39,7 @@ An AI chatbot with persistent memory, a real-time sub-agent framework, and a mod
 
 ## Tech Stack
 
-- **LLM**: [Ollama](https://ollama.ai) with `qwen3:8b`
+- **LLM**: [Ollama](https://ollama.ai) — any locally installed model, selectable from the UI
 - **Backend**: Python + Flask
 - **Storage**: SQLite (standard library, zero config)
 - **Search**: DuckDuckGo via `ddgs`

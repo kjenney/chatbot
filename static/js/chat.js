@@ -19,12 +19,14 @@ class ChatApp {
         this.closeSearchModal = document.getElementById('close-search-modal');
         this.searchInput = document.getElementById('search-input');
         this.searchResults = document.getElementById('search-results');
+        this.modelSelect = document.getElementById('model-select');
 
         this.init();
     }
 
     init() {
-        // Load sessions on startup
+        // Load models and sessions on startup
+        this.loadModels();
         this.loadSessions();
 
         // Event listeners
@@ -52,6 +54,32 @@ class ChatApp {
                 this.closeSearchModalHandler();
             }
         });
+    }
+
+    async loadModels() {
+        try {
+            const response = await fetch('/api/models');
+            const data = await response.json();
+            const models = data.models || [];
+
+            if (models.length === 0) {
+                this.modelSelect.innerHTML = '<option value="">No models found</option>';
+                return;
+            }
+
+            const defaultModel = 'qwen3:8b';
+            this.modelSelect.innerHTML = models.map(m => `
+                <option value="${m}" ${m === defaultModel ? 'selected' : ''}>${m}</option>
+            `).join('');
+
+            // If default not in list, select first
+            if (!models.includes(defaultModel)) {
+                this.modelSelect.selectedIndex = 0;
+            }
+        } catch (error) {
+            console.error('Error loading models:', error);
+            this.modelSelect.innerHTML = '<option value="">Error loading models</option>';
+        }
     }
 
     autoResizeTextarea() {
@@ -186,7 +214,11 @@ class ChatApp {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ message, session_id: this.currentSessionId })
+                body: JSON.stringify({
+                    message,
+                    session_id: this.currentSessionId,
+                    model: this.modelSelect.value || undefined
+                })
             });
 
             const data = await response.json();
