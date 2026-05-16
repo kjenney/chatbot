@@ -34,7 +34,7 @@ An AI chatbot agent that has persistent memory using SQLite database. The chatbo
 
 ```bash
 # Clone or navigate to the project directory
-cd local-agent-with-memory
+cd chatbot
 
 # Create a virtual environment
 python3 -m venv venv
@@ -65,7 +65,7 @@ ollama pull qwen3:8b
 Launch the modern web interface:
 
 ```bash
-./run_web.sh
+python3 web_app.py
 ```
 
 Then open your browser to: **http://localhost:7000**
