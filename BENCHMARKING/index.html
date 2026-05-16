@@ -818,6 +818,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#web-ui-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web UI Report
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Web UI Report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#accessing-the-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accessing the Report
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#runs-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runs Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-detail-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Case Detail View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#iterative-improvement-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1072,6 +1133,67 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#web-ui-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Web UI Report
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Web UI Report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#accessing-the-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accessing the Report
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#runs-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runs Table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#case-detail-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Case Detail View
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#api-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#iterative-improvement-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1268,6 +1390,106 @@
 <p>Query raw results directly:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>sqlite3<span class="w"> </span>web_chatbot.db<span class="w"> </span><span class="s2">&quot;SELECT agent_name, case_id, passed, latency_ms FROM benchmark_results ORDER BY timestamp DESC LIMIT 20;&quot;</span>
 </code></pre></div>
+<h2 id="web-ui-report">Web UI Report<a class="headerlink" href="#web-ui-report" title="Permanent link">&para;</a></h2>
+<p>The web interface includes a Benchmark Reports page that displays stored results directly from <code>web_chatbot.db</code>.</p>
+<h3 id="accessing-the-report">Accessing the Report<a class="headerlink" href="#accessing-the-report" title="Permanent link">&para;</a></h3>
+<p>Navigate to <strong>http://localhost:7000/benchmarks</strong> after starting the web server. A waveform icon in the chat header also links to this page.</p>
+<h3 id="runs-table">Runs Table<a class="headerlink" href="#runs-table" title="Permanent link">&para;</a></h3>
+<p>Each row represents one benchmark run (a single invocation of <code>python3 benchmark.py</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Timestamp</td>
+<td>When the run started</td>
+</tr>
+<tr>
+<td>Model</td>
+<td>Ollama model used</td>
+</tr>
+<tr>
+<td>Agents</td>
+<td>Number of distinct agents tested</td>
+</tr>
+<tr>
+<td>Pass Rate</td>
+<td>Percentage of cases that passed</td>
+</tr>
+<tr>
+<td>Cases</td>
+<td>Passed / total case count</td>
+</tr>
+<tr>
+<td>Avg Latency</td>
+<td>Mean response time across all cases</td>
+</tr>
+</tbody>
+</table>
+<p>Click any row to expand the individual case results for that run.</p>
+<h3 id="case-detail-view">Case Detail View<a class="headerlink" href="#case-detail-view" title="Permanent link">&para;</a></h3>
+<p>Expanded rows show all cases grouped by agent:</p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Case ID</td>
+<td>Unique identifier from the benchmark JSON</td>
+</tr>
+<tr>
+<td>Input</td>
+<td>The prompt sent to the chatbot</td>
+</tr>
+<tr>
+<td>Response</td>
+<td>Truncated chatbot response</td>
+</tr>
+<tr>
+<td>Correctness</td>
+<td>Percentage of expected keywords/patterns matched</td>
+</tr>
+<tr>
+<td>Latency / Status</td>
+<td>Response time and PASS/FAIL result</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-endpoints">API Endpoints<a class="headerlink" href="#api-endpoints" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/benchmarks</code></td>
+<td>GET</td>
+<td>Benchmark Reports UI</td>
+</tr>
+<tr>
+<td><code>/api/benchmarks/runs</code></td>
+<td>GET</td>
+<td>All runs with summary stats (JSON)</td>
+</tr>
+<tr>
+<td><code>/api/benchmarks/runs/&lt;run_id&gt;</code></td>
+<td>GET</td>
+<td>Case-level results for a specific run (JSON)</td>
+</tr>
+</tbody>
+</table>
 <h2 id="iterative-improvement-workflow">Iterative Improvement Workflow<a class="headerlink" href="#iterative-improvement-workflow" title="Permanent link">&para;</a></h2>
 <ol>
 <li>Run <code>python3 benchmark.py</code> to get a baseline</li>
