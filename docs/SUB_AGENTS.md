@@ -256,8 +256,7 @@ Use this information to answer the user's question accurately.
 Run the comprehensive test suite:
 
 ```bash
-source venv/bin/activate
-python3 test_sub_agents.py
+python test_sub_agents.py
 ```
 
 This tests:

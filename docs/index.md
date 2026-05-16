@@ -57,3 +57,7 @@ python3 web_app.py
 ```
 
 Then open **http://localhost:7000**.
+
+## Tests
+
+Tests are written and placed in the `tests` folder. To run all run `pytest` in the root of the project.
