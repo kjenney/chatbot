@@ -27,11 +27,62 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* App-wide top header */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    height: 52px;
+    background: var(--bg-sidebar);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+    z-index: 100;
+}
+
+.app-header .app-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.app-header .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.app-header .nav-link {
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.app-header .nav-link:hover {
+    background: var(--bg-main);
+    color: var(--text-primary);
+}
+
+.app-header .nav-link.active {
+    background: var(--primary-color);
+    color: #fff;
 }
 
 .container {
     display: flex;
-    height: 100vh;
+    flex: 1;
+    min-height: 0;
     max-width: 100%;
 }
 

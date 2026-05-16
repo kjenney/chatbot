@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    <header class="app-header">
+        <a href="/" class="app-title">AI Assistant</a>
+        <nav class="header-nav">
+            <a href="/" class="nav-link active">Chat</a>
+            <a href="/benchmarks" class="nav-link">Reports</a>
+        </nav>
+    </header>
     <div class="container">
         <!-- Sidebar for session management -->
         <aside class="sidebar">
@@ -28,10 +35,6 @@
         <!-- Main chat area -->
         <main class="chat-container">
             <header class="chat-header">
-                <div class="header-content">
-                    <h1>AI Assistant</h1>
-                    <p class="subtitle">Powered by Ollama with Persistent Memory</p>
-                </div>
                 <div class="header-actions">
                     <div class="model-selector-wrapper">
                         <label for="model-select" class="model-label">Model</label>
@@ -45,11 +48,6 @@
                             <path d="m21 21-4.35-4.35"></path>
                         </svg>
                     </button>
-                    <a href="/benchmarks" class="btn btn-icon" title="Benchmark Reports">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                        </svg>
-                    </a>
                     <button id="clear-chat-btn" class="btn btn-icon" title="Clear current view">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polyline points="3 6 5 6 21 6"></polyline>

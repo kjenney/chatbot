@@ -9,7 +9,8 @@
         .benchmarks-layout {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            flex: 1;
+            overflow-y: auto;
             max-width: 1200px;
             margin: 0 auto;
             padding: 2rem;
@@ -161,16 +162,16 @@
     </style>
 </head>
 <body>
+    <header class="app-header">
+        <a href="/" class="app-title">AI Assistant</a>
+        <nav class="header-nav">
+            <a href="/" class="nav-link">Chat</a>
+            <a href="/benchmarks" class="nav-link active">Reports</a>
+        </nav>
+    </header>
 <div class="benchmarks-layout">
     <div class="bench-header">
         <h1>Benchmark Reports</h1>
-        <a href="/" class="btn btn-icon" title="Back to Chat">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                <polyline points="9 22 9 12 15 12 15 22"></polyline>
-            </svg>
-            Chat
-        </a>
     </div>
 
     <div class="bench-table-wrapper">
