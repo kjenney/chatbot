@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmark Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .benchmarks-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 1.5rem;
+        }
+
+        .bench-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .bench-header h1 {
+            flex: 1;
+            margin: 0;
+            font-size: 1.6rem;
+        }
+
+        .bench-table-wrapper {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color, #e2e8f0);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead th {
+            background: var(--sidebar-bg, #f8fafc);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-muted, #64748b);
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+            white-space: nowrap;
+        }
+
+        tbody tr {
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: var(--hover-bg, #f1f5f9);
+        }
+
+        tbody tr.expanded {
+            background: var(--hover-bg, #f1f5f9);
+        }
+
+        tbody td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+            vertical-align: middle;
+        }
+
+        .pass-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .pass-badge.good { background: #dcfce7; color: #166534; }
+        .pass-badge.warn { background: #fef9c3; color: #854d0e; }
+        .pass-badge.bad  { background: #fee2e2; color: #991b1b; }
+
+        .expand-row td {
+            padding: 0;
+            cursor: default;
+        }
+
+        .expand-content {
+            padding: 1rem 1.5rem;
+            background: var(--bg-alt, #f8fafc);
+            border-bottom: 2px solid var(--border-color, #e2e8f0);
+        }
+
+        .expand-content h4 {
+            margin: 0 0 0.75rem;
+            font-size: 0.95rem;
+            color: var(--text-muted, #64748b);
+        }
+
+        .case-row {
+            display: grid;
+            grid-template-columns: 1fr 6fr 2fr 2fr 2fr;
+            gap: 0.5rem;
+            align-items: start;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+            font-size: 0.85rem;
+        }
+
+        .case-row:last-child { border-bottom: none; }
+
+        .case-row .case-label {
+            font-weight: 600;
+            color: var(--text-primary, #1e293b);
+        }
+
+        .case-row .case-input {
+            color: var(--text-muted, #64748b);
+            word-break: break-word;
+        }
+
+        .case-row .case-response {
+            color: var(--text-muted, #64748b);
+            word-break: break-word;
+            max-height: 4rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .agent-group { margin-bottom: 1rem; }
+
+        .agent-group h5 {
+            margin: 0 0 0.5rem;
+            padding: 0.3rem 0.6rem;
+            background: var(--border-color, #e2e8f0);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted, #64748b);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted, #64748b);
+        }
+
+        .chevron {
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .chevron.open { transform: rotate(90deg); }
+    </style>
+</head>
+<body>
+<div class="benchmarks-layout">
+    <div class="bench-header">
+        <h1>Benchmark Reports</h1>
+        <a href="/" class="btn btn-icon" title="Back to Chat">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            Chat
+        </a>
+    </div>
+
+    <div class="bench-table-wrapper">
+        <table id="runs-table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Timestamp</th>
+                    <th>Model</th>
+                    <th>Agents</th>
+                    <th>Pass Rate</th>
+                    <th>Cases</th>
+                    <th>Avg Latency</th>
+                </tr>
+            </thead>
+            <tbody id="runs-body">
+                <tr><td colspan="7" class="loading-spinner">Loading runs…</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+const runsBody = document.getElementById('runs-body');
+let expanded = {};
+
+function passClass(rate) {
+    if (rate >= 80) return 'good';
+    if (rate >= 50) return 'warn';
+    return 'bad';
+}
+
+function formatTs(ts) {
+    try { return new Date(ts).toLocaleString(); } catch { return ts; }
+}
+
+async function loadRuns() {
+    try {
+        const res = await fetch('/api/benchmarks/runs');
+        const data = await res.json();
+        if (!data.success || !data.runs.length) {
+            runsBody.innerHTML = '<tr><td colspan="7" class="no-data">No benchmark runs found.</td></tr>';
+            return;
+        }
+        runsBody.innerHTML = '';
+        data.runs.forEach(run => renderRun(run));
+    } catch (e) {
+        runsBody.innerHTML = `<tr><td colspan="7" class="no-data">Error: ${e.message}</td></tr>`;
+    }
+}
+
+function renderRun(run) {
+    const rate = run.total_cases > 0 ? Math.round(100 * run.passed_cases / run.total_cases) : 0;
+    const cls = passClass(rate);
+    const row = document.createElement('tr');
+    row.dataset.runId = run.run_id;
+    row.innerHTML = `
+        <td><span class="chevron" id="chev-${run.run_id}">&#9658;</span></td>
+        <td>${formatTs(run.timestamp)}</td>
+        <td>${run.model || '—'}</td>
+        <td>${run.agent_count}</td>
+        <td><span class="pass-badge ${cls}">${rate}%</span></td>
+        <td>${run.passed_cases}/${run.total_cases}</td>
+        <td>${run.avg_latency_ms}ms</td>
+    `;
+    row.addEventListener('click', () => toggleExpand(run.run_id, row));
+    runsBody.appendChild(row);
+
+    const expandRow = document.createElement('tr');
+    expandRow.className = 'expand-row';
+    expandRow.id = `expand-${run.run_id}`;
+    expandRow.style.display = 'none';
+    expandRow.innerHTML = `<td colspan="7"><div class="expand-content" id="content-${run.run_id}"><div class="loading-spinner">Loading…</div></div></td>`;
+    runsBody.appendChild(expandRow);
+}
+
+async function toggleExpand(runId, row) {
+    const expandRow = document.getElementById(`expand-${runId}`);
+    const chev = document.getElementById(`chev-${runId}`);
+    if (expanded[runId]) {
+        expandRow.style.display = 'none';
+        chev.classList.remove('open');
+        row.classList.remove('expanded');
+        expanded[runId] = false;
+        return;
+    }
+    expandRow.style.display = '';
+    chev.classList.add('open');
+    row.classList.add('expanded');
+    expanded[runId] = true;
+    await loadRunDetail(runId);
+}
+
+async function loadRunDetail(runId) {
+    const content = document.getElementById(`content-${runId}`);
+    try {
+        const res = await fetch(`/api/benchmarks/runs/${runId}`);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error);
+
+        // Group by agent
+        const byAgent = {};
+        data.results.forEach(r => {
+            if (!byAgent[r.agent_name]) byAgent[r.agent_name] = [];
+            byAgent[r.agent_name].push(r);
+        });
+
+        let html = '<h4>Case Results</h4>';
+        for (const [agent, cases] of Object.entries(byAgent)) {
+            html += `<div class="agent-group"><h5>${agent}</h5>`;
+            html += `<div class="case-row" style="font-weight:600;color:var(--text-muted,#64748b);font-size:0.8rem">
+                <span>Case ID</span><span>Input</span><span>Response</span><span>Correctness</span><span>Latency / Status</span>
+            </div>`;
+            cases.forEach(c => {
+                const statusColor = c.passed ? '#166534' : '#991b1b';
+                const status = c.passed ? 'PASS' : 'FAIL';
+                html += `<div class="case-row">
+                    <span class="case-label">${c.case_id}</span>
+                    <span class="case-input">${escHtml(c.input)}</span>
+                    <span class="case-response">${escHtml(c.response)}</span>
+                    <span>${(c.correctness * 100).toFixed(0)}%</span>
+                    <span style="color:${statusColor};font-weight:600">${c.latency_ms}ms &nbsp;${status}</span>
+                </div>`;
+            });
+            html += '</div>';
+        }
+        content.innerHTML = html;
+    } catch (e) {
+        content.innerHTML = `<div class="no-data">Error loading details: ${e.message}</div>`;
+    }
+}
+
+function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+loadRuns();
+</script>
+</body>
+</html>

@@ -7,8 +7,11 @@ Flask-based web application with modern chat UI
 from flask import Flask, render_template, request, jsonify, session, g
 from chatbot_agent import PersistentChatbot
 import os
+import sqlite3
 from datetime import datetime
 import ollama
+
+DB_PATH = "web_chatbot.db"
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # For session management
@@ -27,6 +30,16 @@ def close_chatbot(error):
     chatbot = g.pop('chatbot', None)
     if chatbot is not None:
         chatbot.close()
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
+
+
+def get_db():
+    if 'db' not in g:
+        g.db = sqlite3.connect(DB_PATH)
+        g.db.row_factory = sqlite3.Row
+    return g.db
 
 
 @app.route('/')
@@ -216,6 +229,48 @@ def delete_session(session_id):
         'success': False,
         'error': 'Delete functionality not yet implemented'
     }), 501
+
+
+@app.route('/benchmarks')
+def benchmarks():
+    return render_template('benchmarks.html')
+
+
+@app.route('/api/benchmarks/runs', methods=['GET'])
+def get_benchmark_runs():
+    try:
+        db = get_db()
+        rows = db.execute("""
+            SELECT
+                run_id,
+                MIN(timestamp) AS timestamp,
+                model,
+                COUNT(*) AS total_cases,
+                SUM(passed) AS passed_cases,
+                ROUND(AVG(latency_ms)) AS avg_latency_ms,
+                COUNT(DISTINCT agent_name) AS agent_count
+            FROM benchmark_results
+            GROUP BY run_id
+            ORDER BY timestamp DESC
+        """).fetchall()
+        return jsonify({'success': True, 'runs': [dict(r) for r in rows]})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/benchmarks/runs/<run_id>', methods=['GET'])
+def get_benchmark_run(run_id):
+    try:
+        db = get_db()
+        rows = db.execute("""
+            SELECT id, agent_name, case_id, input, response, correctness, latency_ms, passed, timestamp
+            FROM benchmark_results
+            WHERE run_id = ?
+            ORDER BY agent_name, id
+        """, (run_id,)).fetchall()
+        return jsonify({'success': True, 'results': [dict(r) for r in rows]})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 if __name__ == '__main__':
