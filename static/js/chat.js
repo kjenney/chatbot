@@ -74,6 +74,7 @@ class ChatApp {
         // Re-render agent panels on all existing bot messages
         const botMessages = this.chatMessages.querySelectorAll('.message.bot');
         botMessages.forEach(el => {
+            if (el.id === 'typing-indicator') return;
             const agentsCalled = this.agentDataMap.get(el) || [];
             // Remove existing panel if present
             const existing = el.querySelector('.agent-panel');
@@ -100,7 +101,7 @@ class ChatApp {
             const pill = document.createElement('span');
             pill.className = `agent-pill ${a.success ? 'success' : 'fail'}`;
             const icon = a.success ? '✓' : '✗';
-            const latency = a.success ? ` ${a.latency_ms}ms` : ' timeout';
+            const latency = a.latency_ms != null ? ` ${a.latency_ms}ms` : ' timeout';
             pill.textContent = `${a.agent} ${icon}${latency}`;
             pillsDiv.appendChild(pill);
         });
