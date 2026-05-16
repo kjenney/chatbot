@@ -499,6 +499,7 @@ class PersistentChatbot:
             results = self.orchestrator.execute_agents(agent_tasks, timeout=10)
             results = results or []
             elapsed_ms = int((time.time() - start) * 1000)
+            # latency_ms is wall-clock time for the full parallel batch, not per-agent
             self._last_agent_calls = [
                 {
                     "agent": r.get("agent", "unknown"),

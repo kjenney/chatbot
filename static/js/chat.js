@@ -76,12 +76,14 @@ class ChatApp {
         botMessages.forEach(el => {
             if (el.id === 'typing-indicator') return;
             const agentsCalled = this.agentDataMap.get(el) || [];
+            const contentDiv = el.querySelector('.message-content');
+            if (!contentDiv) return;
             // Remove existing panel if present
-            const existing = el.querySelector('.agent-panel');
+            const existing = contentDiv.querySelector('.agent-panel');
             if (existing) existing.remove();
             // Render panel if view is on and agents ran
             if (this.advancedViewOn && agentsCalled.length > 0) {
-                el.appendChild(this._buildAgentPanel(agentsCalled));
+                contentDiv.appendChild(this._buildAgentPanel(agentsCalled));
             }
         });
     }
@@ -329,7 +331,7 @@ class ChatApp {
         if (role === 'bot' && agentsCalled.length > 0) {
             this.agentDataMap.set(messageDiv, agentsCalled);
             if (this.advancedViewOn) {
-                messageDiv.appendChild(this._buildAgentPanel(agentsCalled));
+                contentDiv.appendChild(this._buildAgentPanel(agentsCalled));
             }
         }
 
