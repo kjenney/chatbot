@@ -1405,7 +1405,7 @@
 <h1 id="web-interface-guide">Web Interface Guide<a class="headerlink" href="#web-interface-guide" title="Permanent link">&para;</a></h1>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <p>Launch the web interface with one command:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python<span class="w"> </span>web_app.py
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>python3<span class="w"> </span>src/web_app.py
 </code></pre></div>
 <p>Then open your browser to: <strong>http://localhost:7000</strong></p>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
@@ -1445,10 +1445,10 @@
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
 <h3 id="backend-flask">Backend (Flask)<a class="headerlink" href="#backend-flask" title="Permanent link">&para;</a></h3>
 <ul>
-<li><code>web_app.py</code> - Main Flask application</li>
+<li><code>src/web_app.py</code> - Main Flask application</li>
 <li>RESTful API endpoints for all chat operations</li>
 <li>Session management with Flask sessions</li>
-<li>Integrates with existing <code>chatbot_agent.py</code></li>
+<li>Integrates with <code>src/chatbot_agent.py</code></li>
 </ul>
 <h3 id="frontend">Frontend<a class="headerlink" href="#frontend" title="Permanent link">&para;</a></h3>
 <ul>
@@ -1534,7 +1534,7 @@
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">}</span>
 </code></pre></div>
 <h3 id="change-port">Change Port<a class="headerlink" href="#change-port" title="Permanent link">&para;</a></h3>
-<p>Edit <code>web_app.py</code> line 200:</p>
+<p>Edit <code>src/web_app.py</code> line 200:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">7000</span><span class="p">)</span>  <span class="c1"># Change 7000 to your desired port</span>
 </code></pre></div>
 <h3 id="add-authentication">Add Authentication<a class="headerlink" href="#add-authentication" title="Permanent link">&para;</a></h3>
@@ -1549,7 +1549,7 @@
 <h3 id="enable-https">Enable HTTPS<a class="headerlink" href="#enable-https" title="Permanent link">&para;</a></h3>
 <p>Use a production WSGI server like Gunicorn with SSL:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pip<span class="w"> </span>install<span class="w"> </span>gunicorn
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>gunicorn<span class="w"> </span>--certfile<span class="o">=</span>cert.pem<span class="w"> </span>--keyfile<span class="o">=</span>key.pem<span class="w"> </span>-b<span class="w"> </span><span class="m">0</span>.0.0.0:443<span class="w"> </span>web_app:app
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>gunicorn<span class="w"> </span>--certfile<span class="o">=</span>cert.pem<span class="w"> </span>--keyfile<span class="o">=</span>key.pem<span class="w"> </span>-b<span class="w"> </span><span class="m">0</span>.0.0.0:443<span class="w"> </span>src.web_app:app
 </code></pre></div>
 <h2 id="deployment">Deployment<a class="headerlink" href="#deployment" title="Permanent link">&para;</a></h2>
 <h3 id="local-network-access">Local Network Access<a class="headerlink" href="#local-network-access" title="Permanent link">&para;</a></h3>
@@ -1565,7 +1565,7 @@
 <li>
 <p><strong>Gunicorn</strong> (Production WSGI server)
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>pip<span class="w"> </span>install<span class="w"> </span>gunicorn
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>gunicorn<span class="w"> </span>-w<span class="w"> </span><span class="m">4</span><span class="w"> </span>-b<span class="w"> </span><span class="m">0</span>.0.0.0:7000<span class="w"> </span>web_app:app
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nv">PYTHONPATH</span><span class="o">=</span>src<span class="w"> </span>gunicorn<span class="w"> </span>-w<span class="w"> </span><span class="m">4</span><span class="w"> </span>-b<span class="w"> </span><span class="m">0</span>.0.0.0:7000<span class="w"> </span>web_app:app
 </code></pre></div></p>
 </li>
 <li>
@@ -1589,18 +1589,19 @@
 <a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">COPY</span><span class="w"> </span>requirements.txt<span class="w"> </span>.
 <a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="k">COPY</span><span class="w"> </span>.<span class="w"> </span>.
-<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;gunicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-w&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-b&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;0.0.0.0:7000&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;web_app:app&quot;</span><span class="p">]</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="k">ENV</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span>/app/src
+<a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;gunicorn&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-w&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;-b&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;0.0.0.0:7000&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;web_app:app&quot;</span><span class="p">]</span>
 </code></pre></div></p>
 </li>
 </ol>
 <h3 id="environment-variables">Environment Variables<a class="headerlink" href="#environment-variables" title="Permanent link">&para;</a></h3>
 <p>Set <code>FLASK_ENV=production</code> for production deployments:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">FLASK_ENV</span><span class="o">=</span>production
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>python<span class="w"> </span>web_app.py
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>python3<span class="w"> </span>src/web_app.py
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="port-already-in-use">Port Already in Use<a class="headerlink" href="#port-already-in-use" title="Permanent link">&para;</a></h3>
-<p>Change the port in <code>web_app.py</code> or kill the process using port 7000:</p>
+<p>Change the port in <code>src/web_app.py</code> or kill the process using port 7000:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Find process on port 7000</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>lsof<span class="w"> </span>-i<span class="w"> </span>:7000
 <a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
@@ -1620,7 +1621,7 @@
 <p>⚠️ <strong>Important for production:</strong></p>
 <ol>
 <li>
-<p>Change the secret key in <code>web_app.py</code>:
+<p>Change the secret key in <code>src/web_app.py</code>:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">app</span><span class="o">.</span><span class="n">secret_key</span> <span class="o">=</span> <span class="s1">&#39;your-secure-random-key-here&#39;</span>
 </code></pre></div></p>
 </li>
